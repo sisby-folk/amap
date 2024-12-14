@@ -16,5 +16,7 @@ public class AMapClient implements ClientModInitializer {
 
         SurveyorClientEvents.Register.worldLoad(AMap.id("world_load"), MapStorage.INSTANCE);
         SurveyorClientEvents.Register.terrainUpdated(AMap.id("terrain_updated"), MapStorage.INSTANCE);
+
+        AMapKeybinds.register();
     }
 }

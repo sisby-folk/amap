@@ -8,8 +8,6 @@ import folk.sisby.surveyor.terrain.RegionSummary;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
@@ -17,6 +15,10 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec3;
 
 public class MinimapHud implements HudRenderCallback {
+    public static int scale = 0;
+    public static final int minScale = -2;
+    public static final int maxScale = 2;
+
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
         PoseStack pose = gui.pose();
@@ -61,7 +63,8 @@ public class MinimapHud implements HudRenderCallback {
 
             pose.pushPose();
                 pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
-                pose.translate(-floorMod(playerPos.x, 16), -floorMod(playerPos.z, 16), 0);
+                pose.scale((float) Math.pow(2, scale), (float) Math.pow(2, scale), 1);
+                pose.translate(-playerPos.x % 16, -playerPos.z % 16, 0);
                 for (int x = -4; x < 4; x++) {
                     for (int y = -4; y < 4; y++) {
                         pose.pushPose();
@@ -84,8 +87,12 @@ public class MinimapHud implements HudRenderCallback {
         gui.disableScissor();
     }
 
-    private static double floorMod(double x, double y) {
-        return ((x % y) + y) % y;
+    public static void zoomOut() {
+        if (scale > minScale) scale--;
+    }
+
+    public static void zoomIn() {
+        if (scale < maxScale) scale++;
     }
 
     private void renderChunk(GuiGraphics gui, ChunkPos chunkPos) {
