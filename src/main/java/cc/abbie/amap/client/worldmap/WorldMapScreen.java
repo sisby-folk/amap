@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 
 public class WorldMapScreen extends Screen {
     public WorldMapScreen() {
-        super(Component.translatable("screen.amap.world_map"));
+        super(Component.translatable("screen.amap.worldmap"));
     }
 
     @Override

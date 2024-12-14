@@ -10,17 +10,17 @@ import org.lwjgl.glfw.GLFW;
 
 public class AMapKeybinds implements ClientTickEvents.EndTick {
 
-    private static final String worldMapCategory = "key.categories.amap.world_map";
-    public static final KeyMapping OPEN_WORLD_MAP = new KeyMapping("key.amap.world_map.open", GLFW.GLFW_KEY_M, worldMapCategory);
+    private static final String worldMapCategory = "key.categories.amap.worldmap";
+    private static final KeyMapping openWorldmap = new KeyMapping("key.amap.worldmap.open", GLFW.GLFW_KEY_M, worldMapCategory);
 
     private static final String minimapCategory = "key.categories.amap.minimap";
-    public static final KeyMapping ZOOM_OUT_MINIMAP = new KeyMapping("key.amap.minimap.zoom_out", GLFW.GLFW_KEY_MINUS, minimapCategory);
-    public static final KeyMapping ZOOM_IN_MINIMAP = new KeyMapping("key.amap.minimap.zoom_in", GLFW.GLFW_KEY_EQUAL, minimapCategory);
+    private static final KeyMapping zoomOutMinimap = new KeyMapping("key.amap.minimap.zoom_out", GLFW.GLFW_KEY_MINUS, minimapCategory);
+    private static final KeyMapping zoomInMinimap = new KeyMapping("key.amap.minimap.zoom_in", GLFW.GLFW_KEY_EQUAL, minimapCategory);
 
     public static void register() {
-        KeyBindingHelper.registerKeyBinding(OPEN_WORLD_MAP);
-        KeyBindingHelper.registerKeyBinding(ZOOM_OUT_MINIMAP);
-        KeyBindingHelper.registerKeyBinding(ZOOM_IN_MINIMAP);
+        KeyBindingHelper.registerKeyBinding(openWorldmap);
+        KeyBindingHelper.registerKeyBinding(zoomOutMinimap);
+        KeyBindingHelper.registerKeyBinding(zoomInMinimap);
 
         ClientTickEvents.END_CLIENT_TICK.register(new AMapKeybinds());
     }
@@ -28,11 +28,11 @@ public class AMapKeybinds implements ClientTickEvents.EndTick {
 
     @Override
     public void onEndTick(Minecraft client) {
-        if (ZOOM_OUT_MINIMAP.consumeClick()) {
+        if (zoomOutMinimap.consumeClick()) {
             MinimapHud.zoomOut();
-        } else if (ZOOM_IN_MINIMAP.consumeClick()) {
+        } else if (zoomInMinimap.consumeClick()) {
             MinimapHud.zoomIn();
-        } else if (OPEN_WORLD_MAP.consumeClick()) {
+        } else if (openWorldmap.consumeClick()) {
             client.setScreen(new WorldMapScreen());
         }
     }

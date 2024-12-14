@@ -1,10 +1,10 @@
 {
-  "key.categories.amap.world_map": "AMap world map",
-  "key.amap.world_map.open": "Open world map",
+  "key.categories.amap.worldmap": "AMap world map",
+  "key.amap.worldmap.open": "Open world map",
 
   "key.categories.amap.minimap": "AMap minimap",
   "key.amap.minimap.zoom_out": "Zoom out minimap",
   "key.amap.minimap.zoom_in": "Zoom in minimap",
 
-  "screen.amap.world_map": "World map"
+  "screen.amap.worldmap": "World map"
 }
