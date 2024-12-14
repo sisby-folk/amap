@@ -26,8 +26,9 @@
     "amap.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
-    "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "fabricloader": ">=0.16",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}",
+    "surveyor": ">=0.6"
   }
 }
