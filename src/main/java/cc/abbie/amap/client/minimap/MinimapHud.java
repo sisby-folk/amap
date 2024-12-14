@@ -11,8 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec3;
 
 public class MinimapHud implements HudRenderCallback {
@@ -107,22 +107,31 @@ public class MinimapHud implements HudRenderCallback {
         ChunkPos regionRelativePos = new ChunkPos(RegionSummary.regionRelative(chunkPos.x), RegionSummary.regionRelative(chunkPos.z));
 
         LayerSummary.Raw[][] terr = MapStorage.INSTANCE.terrain.get(regionPos);
-        var palette = MapStorage.INSTANCE.blockPalettes.get(chunkPos);
-        if (terr != null && palette != null) {
-            var summ = terr[regionRelativePos.x][regionRelativePos.z];
-            if (summ != null) {
-                var blocks = summ.blocks();
-                if (blocks != null) {
-                    for (int x = 0; x < 16; x++) {
-                        for (int y = 0; y < 16; y++) {
-                            Block block = palette.byId(blocks[16 * x + y]);
-                            if (block == null) continue;
-                            MapColor mapColor = block.defaultMapColor();
-                            int colour = mapColor.col | 0xff000000;
-                            gui.fill(x, y, x + 1, y + 1, colour);
-                        }
-                    }
+        var blockPalette = MapStorage.INSTANCE.blockPalettes.get(chunkPos);
+        var biomePalette = MapStorage.INSTANCE.biomePalettes.get(chunkPos);
+
+        if (terr == null || blockPalette == null || biomePalette == null) return;
+
+        var summ = terr[regionRelativePos.x][regionRelativePos.z];
+        if (summ == null) return;
+
+        var blocks = summ.blocks();
+        var biomes = summ.biomes();
+        if (blocks == null || biomes == null) return;
+
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                int idx = 16 * x + y;
+                Block block = blockPalette.byId(blocks[idx]);
+                Biome biome = biomePalette.byId(biomes[idx]);
+                if (block == null || biome == null) continue;
+                int colour;
+                if (summ.waterDepths()[idx] > 0) {
+                    colour = biome.getWaterColor() | 0xff000000;
+                } else {
+                    colour = block.defaultMapColor().col | 0xff000000;
                 }
+                gui.fill(x, y, x + 1, y + 1, colour);
             }
         }
     }

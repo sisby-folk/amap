@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -29,6 +30,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
 
     public Map<ChunkPos, LayerSummary.Raw[][]> terrain = new HashMap<>();
     public Map<ChunkPos, RegistryPalette<Block>.ValueView> blockPalettes = new HashMap<>();
+    public Map<ChunkPos, RegistryPalette<Biome>.ValueView> biomePalettes = new HashMap<>();
 
     @Override
     public void onTerrainUpdated(Level level, WorldTerrainSummary terrainSummary, Collection<ChunkPos> chunks) {
@@ -43,6 +45,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
             )[RegionSummary.regionRelative(pos.x)][RegionSummary.regionRelative(pos.z)]
                     = chunk.toSingleLayer(null, null, level.getHeight());
             blockPalettes.put(pos, terrainSummary.getBlockPalette(pos));
+            biomePalettes.put(pos, terrainSummary.getBiomePalette(pos));
         }
     }
 
