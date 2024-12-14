@@ -1,4 +1,4 @@
-package cc.abbie.amap.client;
+package cc.abbie.amap.client.worldmap;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;

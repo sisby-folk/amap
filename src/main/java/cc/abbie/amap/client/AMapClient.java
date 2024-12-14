@@ -1,6 +1,7 @@
 package cc.abbie.amap.client;
 
 import cc.abbie.amap.AMap;
+import cc.abbie.amap.client.minimap.MinimapHud;
 import folk.sisby.surveyor.WorldSummary;
 import folk.sisby.surveyor.client.SurveyorClientEvents;
 import net.fabricmc.api.ClientModInitializer;

@@ -1,5 +1,6 @@
-package cc.abbie.amap.client;
+package cc.abbie.amap.client.minimap;
 
+import cc.abbie.amap.client.MapStorage;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
