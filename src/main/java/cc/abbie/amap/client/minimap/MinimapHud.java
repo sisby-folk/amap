@@ -43,6 +43,8 @@ public class MinimapHud implements HudRenderCallback {
         int mapCentreX = minX + mapWidth / 2;
         int mapCentreY = minY + mapHeight / 2;
 
+        float realScale = (float) Math.pow(2, scale);
+        int renderRadius = (int) (4 / realScale);
 
         gui.enableScissor(minX, minY, maxX, maxY);
         pose.pushPose();
@@ -65,13 +67,13 @@ public class MinimapHud implements HudRenderCallback {
 
             pose.pushPose();
                 pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
-                pose.scale((float) Math.pow(2, scale), (float) Math.pow(2, scale), 1);
+                pose.scale(realScale, realScale, 1);
                 if (rotate) {
                     pose.rotateAround(Axis.ZN.rotationDegrees(rot + 180f), 0, 0, 0);
                 }
                 pose.translate(-playerPos.x % 16, -playerPos.z % 16, 0);
-                for (int x = -4; x < 4; x++) {
-                    for (int y = -4; y < 4; y++) {
+                for (int x = -renderRadius; x < renderRadius; x++) {
+                    for (int y = -renderRadius; y < renderRadius; y++) {
                         pose.pushPose();
                             pose.translate(x * 16, y * 16, 0);
                             renderChunk(gui, new ChunkPos(playerChunkPos.x + x, playerChunkPos.z + y));
