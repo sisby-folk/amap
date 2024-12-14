@@ -16,11 +16,13 @@ public class AMapKeybinds implements ClientTickEvents.EndTick {
     private static final String minimapCategory = "key.categories.amap.minimap";
     private static final KeyMapping zoomOutMinimap = new KeyMapping("key.amap.minimap.zoom_out", GLFW.GLFW_KEY_MINUS, minimapCategory);
     private static final KeyMapping zoomInMinimap = new KeyMapping("key.amap.minimap.zoom_in", GLFW.GLFW_KEY_EQUAL, minimapCategory);
+    private static final KeyMapping toggleRotation = new KeyMapping("key.amap.minimap.toggle_rotation", GLFW.GLFW_KEY_R, minimapCategory);
 
     public static void register() {
         KeyBindingHelper.registerKeyBinding(openWorldmap);
         KeyBindingHelper.registerKeyBinding(zoomOutMinimap);
         KeyBindingHelper.registerKeyBinding(zoomInMinimap);
+        KeyBindingHelper.registerKeyBinding(toggleRotation);
 
         ClientTickEvents.END_CLIENT_TICK.register(new AMapKeybinds());
     }
@@ -34,6 +36,8 @@ public class AMapKeybinds implements ClientTickEvents.EndTick {
             MinimapHud.zoomIn();
         } else if (openWorldmap.consumeClick()) {
             client.setScreen(new WorldMapScreen());
+        } else if (toggleRotation.consumeClick()) {
+            MinimapHud.rotate = !MinimapHud.rotate;
         }
     }
 }

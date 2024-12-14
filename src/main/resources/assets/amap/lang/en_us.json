@@ -5,6 +5,7 @@
   "key.categories.amap.minimap": "AMap minimap",
   "key.amap.minimap.zoom_out": "Zoom out minimap",
   "key.amap.minimap.zoom_in": "Zoom in minimap",
+  "key.amap.minimap.toggle_rotation": "Toggle rotation",
 
   "screen.amap.worldmap": "World map"
 }
