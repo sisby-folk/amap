@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "amap",
+  "version": "${version}",
+  "name": "AMap",
+  "description": "It's A Map!",
+  "authors": [
+    "Abbie"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Abbie5/amap",
+    "sources": "https://github.com/Abbie5/amap",
+    "issues": "https://github.com/Abbie5/amap/issues"
+  },
+  "license": "LGPL-3.0-only",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "cc.abbie.amap.AMap"
+    ],
+    "client": [
+      "cc.abbie.amap.client.AMapClient"
+    ]
+  },
+  "mixins": [
+    "amap.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
