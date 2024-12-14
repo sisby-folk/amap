@@ -18,6 +18,7 @@ public class MinimapHud implements HudRenderCallback {
     public static int scale = 0;
     public static final int minScale = -2;
     public static final int maxScale = 2;
+    public static boolean rotate = true;
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -64,6 +65,9 @@ public class MinimapHud implements HudRenderCallback {
             pose.pushPose();
                 pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
                 pose.scale((float) Math.pow(2, scale), (float) Math.pow(2, scale), 1);
+                if (rotate) {
+                    pose.rotateAround(Axis.ZN.rotationDegrees(rot + 180f), 0, 0, 0);
+                }
                 pose.translate(-playerPos.x % 16, -playerPos.z % 16, 0);
                 for (int x = -4; x < 4; x++) {
                     for (int y = -4; y < 4; y++) {
@@ -77,7 +81,9 @@ public class MinimapHud implements HudRenderCallback {
 
             pose.pushPose();
                 pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
-                pose.rotateAround(Axis.ZP.rotationDegrees(rot + 180f), 0, 0, 0);
+                if (!rotate) {
+                    pose.rotateAround(Axis.ZP.rotationDegrees(rot + 180f), 0, 0, 0);
+                }
                 pose.translate(-0.5f, 0, 0);
                 gui.blit(new ResourceLocation("textures/map/map_icons.png"), -4, -4, 16, 0, 8, 8, 128, 128);
             pose.popPose();
