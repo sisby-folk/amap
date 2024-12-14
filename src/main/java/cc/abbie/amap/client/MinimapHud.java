@@ -108,7 +108,8 @@ public class MinimapHud implements HudRenderCallback {
                 if (blocks != null) {
                     for (int x = 0; x < 16; x++) {
                         for (int y = 0; y < 16; y++) {
-                            Block block = palette.byIdOrThrow(blocks[16 * x + y]);
+                            Block block = palette.byId(blocks[16 * x + y]);
+                            if (block == null) continue;
                             MapColor mapColor = block.defaultMapColor();
                             int colour = mapColor.col | 0xff000000;
                             gui.fill(x, y, x + 1, y + 1, colour);
