@@ -22,6 +22,7 @@ public class MinimapHud implements HudRenderCallback {
     public static final int minScale = -2;
     public static final int maxScale = 2;
     public static boolean rotate = true;
+    public static boolean renderBackground = false;
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -52,7 +53,9 @@ public class MinimapHud implements HudRenderCallback {
         pose.pushPose();
             pose.translate(minX, minY, 0);
 
-            gui.fill(0, 0, mapWidth, mapHeight, 0xff000000);
+            if (renderBackground) {
+                gui.fill(0, 0, mapWidth, mapHeight, 0xff000000);
+            }
 
             float rot;
             ChunkPos playerChunkPos;
