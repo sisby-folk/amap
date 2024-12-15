@@ -123,6 +123,8 @@ public class MinimapHud implements HudRenderCallback {
 
             }
 
+            InfoRenderer.renderInfo(gui, mapWidth / 2, mapHeight + 5, tickDelta);
+
         }
         pose.popPose();
     }
