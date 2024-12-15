@@ -3,7 +3,14 @@ package cc.abbie.amap.client;
 import cc.abbie.amap.GuiUtil;
 import folk.sisby.surveyor.terrain.LayerSummary;
 import folk.sisby.surveyor.terrain.RegionSummary;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -11,12 +18,21 @@ import net.minecraft.world.level.material.MapColor;
 
 public class ChunkRenderer {
 
+    public static Mode mode = Mode.NORMAL;
+
     /**
      * Renders the specified chunk to the screen at 0,0 (pose translation recommended)
-     * @param gui the {@link GuiGraphics} to render with
+     *
+     * @param gui      the {@link GuiGraphics} to render with
      * @param chunkPos chunk position in the current {@link net.minecraft.client.multiplayer.ClientLevel} to render
      */
     public static void renderChunk(GuiGraphics gui, ChunkPos chunkPos) {
+        Minecraft client = Minecraft.getInstance();
+        ClientLevel level = client.level;
+        if (level == null) return;
+        RegistryAccess registryAccess = level.registryAccess();
+        Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+
         ChunkPos regionPos = new ChunkPos(RegionSummary.chunkToRegion(chunkPos.x), RegionSummary.chunkToRegion(chunkPos.z));
         ChunkPos regionRelativePos = new ChunkPos(RegionSummary.regionRelative(chunkPos.x), RegionSummary.regionRelative(chunkPos.z));
         LayerSummary.Raw[][] terr = MapStorage.INSTANCE.regions.get(regionPos);
@@ -31,7 +47,8 @@ public class ChunkRenderer {
         var northBlockPalette = MapStorage.INSTANCE.blockPalettes.get(northChunkPos);
         var northBiomePalette = MapStorage.INSTANCE.biomePalettes.get(northChunkPos);
 
-        if (terr == null || blockPalette == null || biomePalette == null || northTerr == null || northBlockPalette == null || northBiomePalette == null) return;
+        if (terr == null || blockPalette == null || biomePalette == null || northTerr == null || northBlockPalette == null || northBiomePalette == null)
+            return;
 
         var summ = terr[regionRelativePos.x][regionRelativePos.z];
         var northSumm = northTerr[northRegionRelativePos.x][northRegionRelativePos.z];
@@ -52,52 +69,72 @@ public class ChunkRenderer {
                 Block block = blockPalette.byId(blocks[idx]);
                 Biome biome = biomePalette.byId(biomes[idx]);
                 if (block == null || biome == null) continue;
-                MapColor.Brightness brightness;
-                int waterDepth = summ.waterDepths()[idx];
-                MapColor mapColor;
-                if (waterDepth > 0) {
-//                    colour = biome.getWaterColor() | 0xff000000;
-                    double f = (double) waterDepth * 0.1 + (double) (x + y & 1) * 0.2;
-                    if (f < 0.5) {
-                        brightness = MapColor.Brightness.HIGH;
-                    } else if (f > 0.9) {
-                        brightness = MapColor.Brightness.LOW;
-                    } else {
-                        brightness = MapColor.Brightness.NORMAL;
-                    }
-                    mapColor = MapColor.WATER;
-                } else {
-                    int depth = summ.depths()[idx];
-                    int northDepth;
-                    if (y > 0) {
-                        int northIdx = 16 * x + y - 1;
-                        if (!summ.exists().get(northIdx)) {
-                            northDepth = Integer.MAX_VALUE;
+
+                int colour = switch (mode) {
+                    case NORMAL -> {
+                        MapColor.Brightness brightness;
+                        int waterDepth = summ.waterDepths()[idx];
+                        MapColor mapColor;
+                        if (waterDepth > 0) {
+//                            colour = biome.getWaterColor() | 0xff000000;
+                            double f = (double) waterDepth * 0.1 + (double) (x + y & 1) * 0.2;
+                            if (f < 0.5) {
+                                brightness = MapColor.Brightness.HIGH;
+                            } else if (f > 0.9) {
+                                brightness = MapColor.Brightness.LOW;
+                            } else {
+                                brightness = MapColor.Brightness.NORMAL;
+                            }
+                            mapColor = MapColor.WATER;
                         } else {
-                            northDepth = summ.depths()[northIdx] - summ.waterDepths()[northIdx];
+                            int depth = summ.depths()[idx];
+                            int northDepth;
+                            if (y > 0) {
+                                int northIdx = 16 * x + y - 1;
+                                if (!summ.exists().get(northIdx)) {
+                                    northDepth = Integer.MAX_VALUE;
+                                } else {
+                                    northDepth = summ.depths()[northIdx] - summ.waterDepths()[northIdx];
+                                }
+                            } else {
+                                int northIdx = 16 * x + 15;
+                                if (!northSumm.exists().get(northIdx)) {
+                                    northDepth = Integer.MAX_VALUE;
+                                } else {
+                                    northDepth = northSumm.depths()[northIdx] - northSumm.waterDepths()[northIdx];
+                                }
+                            }
+                            if (depth == northDepth) {
+                                brightness = MapColor.Brightness.NORMAL;
+                            } else if (depth < northDepth) {
+                                brightness = MapColor.Brightness.HIGH;
+                            } else {
+                                brightness = MapColor.Brightness.LOW;
+                            }
+                            mapColor = block.defaultMapColor();
                         }
-                    } else {
-                        int northIdx = 16 * x + 15;
-                        if (!northSumm.exists().get(northIdx)) {
-                            northDepth = Integer.MAX_VALUE;
+                        yield GuiUtil.abgrToArgb(mapColor.calculateRGBColor(brightness));
+                    }
+                    case BIOME -> {
+                        Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
+                        if (biomeHolder.is(BiomeTags.IS_RIVER) || biomeHolder.is(BiomeTags.IS_OCEAN) || biomeHolder.is(BiomeTags.IS_DEEP_OCEAN)) {
+                            yield biome.getWaterColor();
+                        } else if (biomeHolder.is(BiomeTags.IS_NETHER)) {
+                            yield biome.getFogColor();
                         } else {
-                            northDepth = northSumm.depths()[northIdx] - northSumm.waterDepths()[northIdx];
+                            yield biome.getGrassColor(0, 0);
                         }
                     }
-                    if (depth == northDepth) {
-                        brightness = MapColor.Brightness.NORMAL;
-                    } else if (depth < northDepth) {
-                        brightness = MapColor.Brightness.HIGH;
-                    } else {
-                        brightness = MapColor.Brightness.LOW;
-                    }
-                    mapColor = block.defaultMapColor();
-                }
-                int colour = GuiUtil.abgrToArgb(mapColor.calculateRGBColor(brightness));
-                fillBatcher.add(x, y, x + 1, y + 1, 0, colour);
+                };
+                fillBatcher.add(x, y, x + 1, y + 1, 0, colour | 0xff000000);
             }
         }
         fillBatcher.close();
+    }
+
+    public enum Mode {
+        NORMAL,
+        BIOME
     }
 
 }
