@@ -164,10 +164,18 @@ public class MinimapHud implements HudRenderCallback {
                     int northDepth;
                     if (y > 0) {
                         int northIdx = 16 * x + y - 1;
-                        northDepth = summ.depths()[northIdx] - summ.waterDepths()[northIdx];
+                        if (!summ.exists().get(northIdx)) {
+                            northDepth = Integer.MAX_VALUE;
+                        } else {
+                            northDepth = summ.depths()[northIdx] - summ.waterDepths()[northIdx];
+                        }
                     } else {
                         int northIdx = 16 * x + 15;
-                        northDepth = northSumm.depths()[northIdx] - northSumm.waterDepths()[northIdx];
+                        if (!northSumm.exists().get(northIdx)) {
+                            northDepth = Integer.MAX_VALUE;
+                        } else {
+                            northDepth = northSumm.depths()[northIdx] - northSumm.waterDepths()[northIdx];
+                        }
                     }
                     if (depth == northDepth) {
                         brightness = MapColor.Brightness.NORMAL;
