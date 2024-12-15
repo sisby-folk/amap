@@ -43,7 +43,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
                     new ChunkPos(RegionSummary.chunkToRegion(pos.x), RegionSummary.chunkToRegion(pos.z)),
                     c -> new LayerSummary.Raw[32][32]
             )[RegionSummary.regionRelative(pos.x)][RegionSummary.regionRelative(pos.z)]
-                    = chunk.toSingleLayer(null, null, level.getHeight());
+                    = layerSummary;
             blockPalettes.put(pos, terrainSummary.getBlockPalette(pos));
             biomePalettes.put(pos, terrainSummary.getBiomePalette(pos));
         }

@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec3;
 
 public class MinimapHud implements HudRenderCallback {
@@ -108,19 +109,29 @@ public class MinimapHud implements HudRenderCallback {
     private void renderChunk(GuiGraphics gui, ChunkPos chunkPos) {
         ChunkPos regionPos = new ChunkPos(RegionSummary.chunkToRegion(chunkPos.x), RegionSummary.chunkToRegion(chunkPos.z));
         ChunkPos regionRelativePos = new ChunkPos(RegionSummary.regionRelative(chunkPos.x), RegionSummary.regionRelative(chunkPos.z));
-
         LayerSummary.Raw[][] terr = MapStorage.INSTANCE.terrain.get(regionPos);
         var blockPalette = MapStorage.INSTANCE.blockPalettes.get(chunkPos);
         var biomePalette = MapStorage.INSTANCE.biomePalettes.get(chunkPos);
 
-        if (terr == null || blockPalette == null || biomePalette == null) return;
+        // needed for shading
+        ChunkPos northChunkPos = new ChunkPos(chunkPos.x, chunkPos.z - 1);
+        ChunkPos northRegionPos = new ChunkPos(RegionSummary.chunkToRegion(northChunkPos.x), RegionSummary.chunkToRegion(northChunkPos.z));
+        ChunkPos northRegionRelativePos = new ChunkPos(RegionSummary.regionRelative(northChunkPos.x), RegionSummary.regionRelative(northChunkPos.z));
+        LayerSummary.Raw[][] northTerr = MapStorage.INSTANCE.terrain.get(northRegionPos);
+        var northBlockPalette = MapStorage.INSTANCE.blockPalettes.get(northChunkPos);
+        var northBiomePalette = MapStorage.INSTANCE.biomePalettes.get(northChunkPos);
+
+        if (terr == null || blockPalette == null || biomePalette == null || northTerr == null || northBlockPalette == null || northBiomePalette == null) return;
 
         var summ = terr[regionRelativePos.x][regionRelativePos.z];
-        if (summ == null) return;
+        var northSumm = northTerr[northRegionRelativePos.x][northRegionRelativePos.z];
+        if (summ == null || northSumm == null) return;
 
         var blocks = summ.blocks();
         var biomes = summ.biomes();
-        if (blocks == null || biomes == null) return;
+        var northBlocks = northSumm.blocks();
+        var northBiomes = northSumm.biomes();
+        if (blocks == null || biomes == null || northBlocks == null || northBiomes == null) return;
 
         FillBatcher fillBatcher = new FillBatcher(gui);
         for (int x = 0; x < 16; x++) {
@@ -129,15 +140,51 @@ public class MinimapHud implements HudRenderCallback {
                 Block block = blockPalette.byId(blocks[idx]);
                 Biome biome = biomePalette.byId(biomes[idx]);
                 if (block == null || biome == null) continue;
-                int colour;
-                if (summ.waterDepths()[idx] > 0) {
-                    colour = biome.getWaterColor() | 0xff000000;
+                MapColor.Brightness brightness;
+                int waterDepth = summ.waterDepths()[idx];
+                MapColor mapColor;
+                if (waterDepth > 0) {
+//                    colour = biome.getWaterColor() | 0xff000000;
+                    double f = (double) waterDepth * 0.1 + (double) (x + y & 1) * 0.2;
+                    if (f < 0.5) {
+                        brightness = MapColor.Brightness.HIGH;
+                    } else if (f > 0.9) {
+                        brightness = MapColor.Brightness.LOW;
+                    } else {
+                        brightness = MapColor.Brightness.NORMAL;
+                    }
+                    mapColor = MapColor.WATER;
                 } else {
-                    colour = block.defaultMapColor().col | 0xff000000;
+                    int depth = summ.depths()[idx];
+                    int northDepth;
+                    if (y > 0) {
+                        int northIdx = 16 * x + y - 1;
+                        northDepth = summ.depths()[northIdx] - summ.waterDepths()[northIdx];
+                    } else {
+                        int northIdx = 16 * x + 15;
+                        northDepth = northSumm.depths()[northIdx] - northSumm.waterDepths()[northIdx];
+                    }
+                    if (depth == northDepth) {
+                        brightness = MapColor.Brightness.NORMAL;
+                    } else if (depth < northDepth) {
+                        brightness = MapColor.Brightness.HIGH;
+                    } else {
+                        brightness = MapColor.Brightness.LOW;
+                    }
+                    mapColor = block.defaultMapColor();
                 }
+                int colour = abgrToArgb(mapColor.calculateRGBColor(brightness));
                 fillBatcher.add(x, y, x + 1, y + 1, 0, colour);
             }
         }
         fillBatcher.close();
+    }
+
+    private static int abgrToArgb(int abgr) {
+        int a = (abgr >> 24) & 0xff;
+        int b = (abgr >> 16) & 0xff;
+        int g = (abgr >> 8) & 0xff;
+        int r = abgr & 0xff;
+        return a << 24 | r << 16 | g << 8 | b;
     }
 }
