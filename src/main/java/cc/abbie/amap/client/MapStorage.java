@@ -51,6 +51,9 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
 
     @Override
     public void onWorldLoad(ClientLevel clientLevel, WorldSummary summary, LocalPlayer player, Map<ChunkPos, BitSet> terrain, Multimap<ResourceKey<Structure>, ChunkPos> structures, Multimap<LandmarkType<?>, BlockPos> landmarks) {
+        regions.clear();
+        biomePalettes.clear();
+        blockPalettes.clear();
         onTerrainUpdated(clientLevel, summary.terrain(), WorldTerrainSummary.toKeys(terrain));
     }
 }
