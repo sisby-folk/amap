@@ -1,5 +1,6 @@
 package cc.abbie.amap.client.minimap;
 
+import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.FillBatcher;
 import cc.abbie.amap.client.MapStorage;
 import com.mojang.blaze3d.platform.Window;
@@ -23,6 +24,7 @@ public class MinimapHud implements HudRenderCallback {
     public static final int maxScale = 2;
     public static boolean rotate = true;
     public static boolean renderBackground = false;
+    public static boolean renderFrame = true;
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -49,7 +51,6 @@ public class MinimapHud implements HudRenderCallback {
         float realScale = (float) Math.pow(2, scale);
         int renderRadius = (int) (4 / realScale);
 
-        gui.enableScissor(minX, minY, maxX, maxY);
         pose.pushPose();
             pose.translate(minX, minY, 0);
 
@@ -70,6 +71,8 @@ public class MinimapHud implements HudRenderCallback {
                 playerPos = Vec3.ZERO;
             }
 
+            gui.enableScissor(minX, minY, maxX, maxY);
+
             pose.pushPose();
                 pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
                 pose.scale(realScale, realScale, 1);
@@ -87,6 +90,8 @@ public class MinimapHud implements HudRenderCallback {
                 }
             pose.popPose();
 
+            gui.disableScissor();
+
             pose.pushPose();
                 pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
                 if (!rotate) {
@@ -96,9 +101,29 @@ public class MinimapHud implements HudRenderCallback {
                 gui.blit(new ResourceLocation("textures/map/map_icons.png"), -4, -4, 16, 0, 8, 8, 128, 128);
             pose.popPose();
 
+            if (renderFrame) {
+                ResourceLocation frameId = AMap.id("textures/gui/minimap/frame.png");
+                int bw = 2; // border width
+                int iw = mapWidth; // inner width
+                int ih = mapHeight; // inner height
+                int rx = mapWidth; // right x
+                int by = mapHeight; // bottom y
+
+                // 4 corners
+                gui.blit(frameId, -2, -2, 0, 0, bw, bw); // top left
+                gui.blit(frameId, rx, -2, 14, 0, bw, bw); // top right
+                gui.blit(frameId, -2, by, 0, 14, bw, bw); // bottom left
+                gui.blit(frameId, rx, by, 14, 14, bw, bw); // bottom right
+
+                // 4 sides
+                gui.blit(frameId, 0, -2, iw, bw, bw, 0, 12, bw, 256, 256); // top
+                gui.blit(frameId, 0, by, iw, bw, bw, 14, 12, bw, 256, 256); // bottom
+                gui.blit(frameId, -2, 0, bw, ih, 0, bw, bw, 12, 256, 256); // left
+                gui.blit(frameId, rx, 0, bw, ih, 14, bw, bw, 12, 256, 256); // right
+
+            }
 
         pose.popPose();
-        gui.disableScissor();
     }
 
     public static void zoomOut() {
