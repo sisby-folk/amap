@@ -28,7 +28,7 @@ import java.util.Map;
 public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClientEvents.TerrainUpdated {
     public static final MapStorage INSTANCE = new MapStorage();
 
-    public Map<ChunkPos, LayerSummary.Raw[][]> terrain = new HashMap<>();
+    public Map<ChunkPos, LayerSummary.Raw[][]> regions = new HashMap<>();
     public Map<ChunkPos, RegistryPalette<Block>.ValueView> blockPalettes = new HashMap<>();
     public Map<ChunkPos, RegistryPalette<Biome>.ValueView> biomePalettes = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
             if (chunk == null) continue;
             LayerSummary.Raw layerSummary = chunk.toSingleLayer(null, null, level.getHeight());
             if (layerSummary == null) continue;
-            terrain.computeIfAbsent(
+            regions.computeIfAbsent(
                     new ChunkPos(RegionSummary.chunkToRegion(pos.x), RegionSummary.chunkToRegion(pos.z)),
                     c -> new LayerSummary.Raw[32][32]
             )[RegionSummary.regionRelative(pos.x)][RegionSummary.regionRelative(pos.z)]

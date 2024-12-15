@@ -109,7 +109,7 @@ public class MinimapHud implements HudRenderCallback {
     private void renderChunk(GuiGraphics gui, ChunkPos chunkPos) {
         ChunkPos regionPos = new ChunkPos(RegionSummary.chunkToRegion(chunkPos.x), RegionSummary.chunkToRegion(chunkPos.z));
         ChunkPos regionRelativePos = new ChunkPos(RegionSummary.regionRelative(chunkPos.x), RegionSummary.regionRelative(chunkPos.z));
-        LayerSummary.Raw[][] terr = MapStorage.INSTANCE.terrain.get(regionPos);
+        LayerSummary.Raw[][] terr = MapStorage.INSTANCE.regions.get(regionPos);
         var blockPalette = MapStorage.INSTANCE.blockPalettes.get(chunkPos);
         var biomePalette = MapStorage.INSTANCE.biomePalettes.get(chunkPos);
 
@@ -117,7 +117,7 @@ public class MinimapHud implements HudRenderCallback {
         ChunkPos northChunkPos = new ChunkPos(chunkPos.x, chunkPos.z - 1);
         ChunkPos northRegionPos = new ChunkPos(RegionSummary.chunkToRegion(northChunkPos.x), RegionSummary.chunkToRegion(northChunkPos.z));
         ChunkPos northRegionRelativePos = new ChunkPos(RegionSummary.regionRelative(northChunkPos.x), RegionSummary.regionRelative(northChunkPos.z));
-        LayerSummary.Raw[][] northTerr = MapStorage.INSTANCE.terrain.get(northRegionPos);
+        LayerSummary.Raw[][] northTerr = MapStorage.INSTANCE.regions.get(northRegionPos);
         var northBlockPalette = MapStorage.INSTANCE.blockPalettes.get(northChunkPos);
         var northBiomePalette = MapStorage.INSTANCE.biomePalettes.get(northChunkPos);
 
