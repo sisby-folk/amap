@@ -1,5 +1,6 @@
 package cc.abbie.amap.client.minimap;
 
+import cc.abbie.amap.client.FillBatcher;
 import cc.abbie.amap.client.MapStorage;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -121,6 +122,7 @@ public class MinimapHud implements HudRenderCallback {
         var biomes = summ.biomes();
         if (blocks == null || biomes == null) return;
 
+        FillBatcher fillBatcher = new FillBatcher(gui);
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 int idx = 16 * x + y;
@@ -133,8 +135,9 @@ public class MinimapHud implements HudRenderCallback {
                 } else {
                     colour = block.defaultMapColor().col | 0xff000000;
                 }
-                gui.fill(x, y, x + 1, y + 1, colour);
+                fillBatcher.add(x, y, x + 1, y + 1, 0, colour);
             }
         }
+        fillBatcher.close();
     }
 }
