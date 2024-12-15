@@ -38,7 +38,8 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
             ChunkSummary chunk = terrainSummary.get(pos);
             if (chunk == null) continue;
             LayerSummary.Raw layerSummary = chunk.toSingleLayer(null, null, level.getHeight());
-            if (layerSummary == null) continue;
+            // empty chunks will return null for toSingleLayer, we don't want this
+            if (layerSummary == null) layerSummary = new LayerSummary.Raw(new BitSet(256), new int[256], new int[256], new int[256], new int[256], new int[256], new int[256]);
             regions.computeIfAbsent(
                     new ChunkPos(RegionSummary.chunkToRegion(pos.x), RegionSummary.chunkToRegion(pos.z)),
                     c -> new LayerSummary.Raw[32][32]
