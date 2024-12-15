@@ -137,6 +137,8 @@ public class MinimapHud implements HudRenderCallback {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 int idx = 16 * x + y;
+                if (!summ.exists().get(idx)) continue;
+
                 Block block = blockPalette.byId(blocks[idx]);
                 Biome biome = biomePalette.byId(biomes[idx]);
                 if (block == null || biome == null) continue;
