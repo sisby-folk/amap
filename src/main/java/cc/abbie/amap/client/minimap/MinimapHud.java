@@ -19,6 +19,7 @@ public class MinimapHud implements HudRenderCallback {
     public static boolean rotate = true;
     public static boolean renderBackground = false;
     public static boolean renderFrame = true;
+    public static Position position = Position.TOP_RIGHT;
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -34,10 +35,30 @@ public class MinimapHud implements HudRenderCallback {
         int offsetX = 5;
         int offsetY = 5;
 
-        int minX = windowWidth - mapWidth - offsetX;
-        int minY = offsetY;
-        int maxX = windowWidth - offsetX;
-        int maxY = mapHeight + offsetY;
+        int minX, minY;
+
+        switch (position) {
+            case TOP_LEFT -> {
+                minX = offsetX;
+                minY = offsetY;
+            }
+            case TOP_RIGHT -> {
+                minX = windowWidth - mapWidth - offsetX;
+                minY = offsetY;
+            }
+            case BOTTOM_LEFT -> {
+                minX = offsetX;
+                minY = windowHeight - mapHeight - offsetY - 20; // extra added for info lines
+            }
+            case BOTTOM_RIGHT -> {
+                minX = windowWidth - mapWidth - offsetX;
+                minY = windowHeight - mapHeight - offsetY - 20;
+            }
+            default -> throw new AssertionError();
+        }
+
+        int maxX = minX + mapWidth;
+        int maxY = minY + mapHeight;
 
         int mapCentreX = minX + mapWidth / 2;
         int mapCentreY = minY + mapHeight / 2;
@@ -137,4 +158,10 @@ public class MinimapHud implements HudRenderCallback {
         if (scale < maxScale) scale++;
     }
 
+    public enum Position {
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT
+    }
 }
