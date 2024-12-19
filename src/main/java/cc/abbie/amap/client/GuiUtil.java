@@ -1,4 +1,4 @@
-package cc.abbie.amap;
+package cc.abbie.amap.client;
 
 public class GuiUtil {
     public static int abgrToArgb(int abgr) {

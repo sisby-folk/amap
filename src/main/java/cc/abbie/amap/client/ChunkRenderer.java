@@ -1,6 +1,5 @@
 package cc.abbie.amap.client;
 
-import cc.abbie.amap.GuiUtil;
 import folk.sisby.surveyor.terrain.LayerSummary;
 import folk.sisby.surveyor.terrain.RegionSummary;
 import net.minecraft.client.Minecraft;
