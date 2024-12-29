@@ -117,8 +117,8 @@ public class MinimapHud implements HudRenderCallback {
                 if (!rotate) {
                     pose.rotateAround(Axis.ZP.rotationDegrees(rot + 180f), 0, 0, 0);
                 }
-                pose.translate(-0.5f, 0, 0);
-                gui.blit(new ResourceLocation("textures/map/map_icons.png"), -4, -4, 16, 0, 8, 8, 128, 128);
+                pose.translate(-3.5f, -4.5f, 0);
+                gui.blit(AMap.id("textures/gui/minimap/arrow.png"), 0, 0, 0, 0, 7, 7, 8, 8);
             }
             pose.popPose();
 
@@ -131,16 +131,16 @@ public class MinimapHud implements HudRenderCallback {
                 int by = mapHeight; // bottom y
 
                 // 4 corners
-                gui.blit(frameId, -2, -2, 0, 0, bw, bw); // top left
-                gui.blit(frameId, rx, -2, 14, 0, bw, bw); // top right
-                gui.blit(frameId, -2, by, 0, 14, bw, bw); // bottom left
-                gui.blit(frameId, rx, by, 14, 14, bw, bw); // bottom right
+                gui.blit(frameId, -2, -2, 0, 0, bw, bw, 16, 16); // top left
+                gui.blit(frameId, rx, -2, 14, 0, bw, bw, 16, 16); // top right
+                gui.blit(frameId, -2, by, 0, 14, bw, bw, 16, 16); // bottom left
+                gui.blit(frameId, rx, by, 14, 14, bw, bw, 16, 16); // bottom right
 
                 // 4 sides
-                gui.blit(frameId, 0, -2, iw, bw, bw, 0, 12, bw, 256, 256); // top
-                gui.blit(frameId, 0, by, iw, bw, bw, 14, 12, bw, 256, 256); // bottom
-                gui.blit(frameId, -2, 0, bw, ih, 0, bw, bw, 12, 256, 256); // left
-                gui.blit(frameId, rx, 0, bw, ih, 14, bw, bw, 12, 256, 256); // right
+                gui.blit(frameId, 0, -2, iw, bw, bw, 0, 12, bw, 16, 16); // top
+                gui.blit(frameId, 0, by, iw, bw, bw, 14, 12, bw, 16, 16); // bottom
+                gui.blit(frameId, -2, 0, bw, ih, 0, bw, bw, 12, 16, 16); // left
+                gui.blit(frameId, rx, 0, bw, ih, 14, bw, bw, 12, 16, 16); // right
 
             }
 
