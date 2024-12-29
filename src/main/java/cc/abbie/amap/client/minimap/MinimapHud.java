@@ -22,6 +22,7 @@ public class MinimapHud implements HudRenderCallback {
     public static boolean renderCrosshair = true;
     private static final int crosshairColour = 0xa0a0a0a0;
     public static Position position = Position.TOP_RIGHT;
+    public static boolean renderArrowWhenRotate = false;
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -128,16 +129,18 @@ public class MinimapHud implements HudRenderCallback {
                 pose.popPose();
             }
 
-            pose.pushPose();
-            {
-                pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
-                if (!rotate) {
-                    pose.rotateAround(Axis.ZP.rotationDegrees(rot + 180f), 0, 0, 0);
+            if (!rotate || renderArrowWhenRotate) {
+                pose.pushPose();
+                {
+                    pose.translate(mapWidth / 2f, mapHeight / 2f, 0);
+                    if (!rotate) {
+                        pose.rotateAround(Axis.ZP.rotationDegrees(rot + 180f), 0, 0, 0);
+                    }
+                    pose.translate(-3.5f, -4.5f, 0);
+                    gui.blit(AMap.id("textures/gui/minimap/arrow.png"), 0, 0, 0, 0, 7, 7, 8, 8);
                 }
-                pose.translate(-3.5f, -4.5f, 0);
-                gui.blit(AMap.id("textures/gui/minimap/arrow.png"), 0, 0, 0, 0, 7, 7, 8, 8);
+                pose.popPose();
             }
-            pose.popPose();
 
             if (renderFrame) {
                 ResourceLocation frameId = AMap.id("textures/gui/minimap/frame.png");
