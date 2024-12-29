@@ -7,5 +7,26 @@
   "key.amap.minimap.zoom_in": "Zoom in minimap",
   "key.amap.minimap.toggle_rotation": "Toggle rotation",
 
-  "screen.amap.worldmap": "World map"
+  "screen.amap.worldmap": "World map",
+
+  "button.amap.toggle.enabled": "Enabled",
+  "button.amap.toggle.disabled": "Disabled",
+
+  "config.amap.category.minimap": "Minimap Options",
+  "config.amap.category.surfaceMap": "SurfaceMap Options",
+  "config.amap.category.entitiesRadar": "EntitiesRadar Options",
+  "config.amap.category.marker": "Marker Options",
+  "config.amap.category.about": "About AMap",
+
+  "config.amap.option.enableMinimap": "AMap Minimap",
+  "config.amap.option.renderType": "Render Type",
+  "config.amap.option.deathPoint": "Death Point",
+
+  "config.amap.option.updateCheck": "Update Check",
+  "config.amap.option.autoUpdateCheck": "Auto Update Check",
+
+  "config.amap.option.exit": "Exit Menu",
+  "config.amap.category.waypoints": "Waypoints",
+  "config.amap.category.keyconfig": "Keyconfig",
+  "config.amap.category.back": "Back"
 }

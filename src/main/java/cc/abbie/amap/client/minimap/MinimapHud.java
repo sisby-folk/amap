@@ -13,6 +13,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 
 public class MinimapHud implements HudRenderCallback {
+    public static boolean enable = true;
     public static int scale = 0;
     public static final int minScale = -2;
     public static final int maxScale = 2;
@@ -26,6 +27,8 @@ public class MinimapHud implements HudRenderCallback {
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
+        if (!enable) return;
+
         PoseStack pose = gui.pose();
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
