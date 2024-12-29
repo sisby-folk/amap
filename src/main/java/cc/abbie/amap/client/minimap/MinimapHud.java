@@ -19,6 +19,8 @@ public class MinimapHud implements HudRenderCallback {
     public static boolean rotate = true;
     public static boolean renderBackground = false;
     public static boolean renderFrame = true;
+    public static boolean renderCrosshair = true;
+    private static final int crosshairColour = 0xa0a0a0a0;
     public static Position position = Position.TOP_RIGHT;
 
     @Override
@@ -110,6 +112,21 @@ public class MinimapHud implements HudRenderCallback {
             }
             pose.popPose();
             gui.disableScissor();
+
+            if (renderCrosshair) {
+                pose.pushPose();
+                {
+                    pose.translate(-0.5f, 0, 0);
+                    gui.vLine(mapWidth / 2, -1, mapHeight, crosshairColour);
+                }
+                pose.popPose();
+                pose.pushPose();
+                {
+                    pose.translate(0, -0.5f, 0);
+                    gui.hLine(0, mapWidth - 1, mapHeight / 2, crosshairColour);
+                }
+                pose.popPose();
+            }
 
             pose.pushPose();
             {
