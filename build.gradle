@@ -33,6 +33,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "folk.sisby:surveyor:${project.surveyor_version}"
+    implementation "folk.sisby:kaleido-config:${project.kaleido_version}"
 }
 
 processResources {
