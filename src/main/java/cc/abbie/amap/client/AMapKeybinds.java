@@ -18,7 +18,7 @@ public class AMapKeybinds implements ClientTickEvents.EndTick {
     private static final KeyMapping zoomOutMinimap = new KeyMapping("key.amap.minimap.zoom_out", GLFW.GLFW_KEY_MINUS, minimapCategory);
     private static final KeyMapping zoomInMinimap = new KeyMapping("key.amap.minimap.zoom_in", GLFW.GLFW_KEY_EQUAL, minimapCategory);
     private static final KeyMapping toggleRotation = new KeyMapping("key.amap.minimap.toggle_rotation", GLFW.GLFW_KEY_R, minimapCategory);
-    private static final KeyMapping openMinimapConfig = new KeyMapping("key.amap.minimap.config", GLFW.GLFW_KEY_PERIOD, minimapCategory);
+    public static final KeyMapping openMinimapConfig = new KeyMapping("key.amap.minimap.config", GLFW.GLFW_KEY_PERIOD, minimapCategory);
 
     public static void register() {
         KeyBindingHelper.registerKeyBinding(openWorldmap);
