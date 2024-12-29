@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 public class AMapKeybinds implements ClientTickEvents.EndTick {
 
     private static final String worldMapCategory = "key.categories.amap.worldmap";
-    private static final KeyMapping openWorldmap = new KeyMapping("key.amap.worldmap.open", GLFW.GLFW_KEY_M, worldMapCategory);
+    public static final KeyMapping openWorldmap = new KeyMapping("key.amap.worldmap.open", GLFW.GLFW_KEY_M, worldMapCategory);
 
     private static final String minimapCategory = "key.categories.amap.minimap";
     private static final KeyMapping zoomOutMinimap = new KeyMapping("key.amap.minimap.zoom_out", GLFW.GLFW_KEY_MINUS, minimapCategory);
