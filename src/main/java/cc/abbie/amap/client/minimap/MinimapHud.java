@@ -24,6 +24,10 @@ public class MinimapHud implements HudRenderCallback {
     private static final int crosshairColour = 0xa0a0a0a0;
     public static Position position = Position.TOP_RIGHT;
     public static boolean renderArrowWhenRotate = false;
+    public static int mapWidth = 100;
+    public static int mapHeight = 100;
+    public static int offsetX = 5;
+    public static int offsetY = 5;
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -34,12 +38,6 @@ public class MinimapHud implements HudRenderCallback {
         Window window = client.getWindow();
         int windowHeight = window.getGuiScaledHeight();
         int windowWidth = window.getGuiScaledWidth();
-
-        int mapWidth = 100;
-        int mapHeight = 100;
-
-        int offsetX = 5;
-        int offsetY = 5;
 
         int minX, minY;
 
@@ -76,7 +74,7 @@ public class MinimapHud implements HudRenderCallback {
 
         pose.pushPose();
         {
-            pose.translate(minX, minY, 0);
+            pose.translate(minX, minY, -100);
 
             if (renderBackground) {
                 gui.fill(0, 0, mapWidth, mapHeight, 0xff000000);
