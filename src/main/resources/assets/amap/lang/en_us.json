@@ -28,5 +28,7 @@
   "config.amap.option.exit": "Exit Menu",
   "config.amap.category.waypoints": "Waypoints",
   "config.amap.category.keyconfig": "Keyconfig",
-  "config.amap.category.back": "Back"
+  "config.amap.category.back": "Back",
+
+  "info.amap.menuKey": "Menu: %s key"
 }

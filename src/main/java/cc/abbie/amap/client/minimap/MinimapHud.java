@@ -43,6 +43,8 @@ public class MinimapHud implements HudRenderCallback {
 
         int minX, minY;
 
+        int infoLinesHeight = InfoRenderer.getHeight();
+
         switch (position) {
             case TOP_LEFT -> {
                 minX = offsetX;
@@ -54,11 +56,11 @@ public class MinimapHud implements HudRenderCallback {
             }
             case BOTTOM_LEFT -> {
                 minX = offsetX;
-                minY = windowHeight - mapHeight - offsetY - 20; // extra added for info lines
+                minY = windowHeight - mapHeight - 2 * offsetY - infoLinesHeight; // extra added for info lines
             }
             case BOTTOM_RIGHT -> {
                 minX = windowWidth - mapWidth - offsetX;
-                minY = windowHeight - mapHeight - offsetY - 20;
+                minY = windowHeight - mapHeight - 2 * offsetY - infoLinesHeight;
             }
             default -> throw new AssertionError();
         }
@@ -167,7 +169,7 @@ public class MinimapHud implements HudRenderCallback {
 
             }
 
-            InfoRenderer.renderInfo(gui, mapWidth / 2, mapHeight + 5, tickDelta);
+            InfoRenderer.renderInfo(gui, mapWidth / 2, 0, mapWidth, mapHeight + 5, tickDelta);
 
         }
         pose.popPose();
