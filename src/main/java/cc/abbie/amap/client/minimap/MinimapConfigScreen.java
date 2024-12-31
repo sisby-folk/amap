@@ -49,7 +49,9 @@ public class MinimapConfigScreen extends Screen {
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.minimap"), b -> {
             MinimapHud.position = MinimapHud.Position.values()[(MinimapHud.position.ordinal() + 1) % MinimapHud.Position.values().length];
         }));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.surfaceMap")));
+        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.surfaceMap"), b -> {
+            MinimapHud.roundMap = !MinimapHud.roundMap;
+        }));
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.entitiesRadar")));
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.marker")));
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.about")));

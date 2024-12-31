@@ -141,38 +141,45 @@ public class MinimapHud implements HudRenderCallback {
 
             if (renderCompass) {
                 if (rotate) {
-                    if (roundMap) {
-                        pose.pushPose();
+                    float x = Mth.sin(rot * Mth.DEG_TO_RAD);
+                    float y = Mth.cos(rot * Mth.DEG_TO_RAD);
 
-                        pose.translate(mapWidth / 2f, mapHeight / 2f - lineHeight / 2f + 1f, 0);
-
-                        float x = Mth.sin(rot * Mth.DEG_TO_RAD) * (mapWidth - lineHeight - 1) / 2f;
-                        float y = Mth.cos(rot * Mth.DEG_TO_RAD) * (mapHeight - lineHeight - 1) / 2f;
-
-                        pose.pushPose();
-                        pose.translate(x, y, 0);
-                        gui.drawCenteredString(font, "N", 0, 0, 0xffff0000);
-                        pose.popPose();
-
-                        pose.pushPose();
-                        pose.translate(-y, x, 0);
-                        gui.drawCenteredString(font, "E", 0, 0, -1);
-                        pose.popPose();
-
-                        pose.pushPose();
-                        pose.translate(-x, -y, 0);
-                        gui.drawCenteredString(font, "S", 0, 0, -1);
-                        pose.popPose();
-
-                        pose.pushPose();
-                        pose.translate(y, -x, 0);
-                        gui.drawCenteredString(font, "W", 0, 0, -1);
-                        pose.popPose();
-
-                        pose.popPose();
-                    } else {
-                        // TODO
+                    if (!roundMap) {
+                        x *= Mth.SQRT_OF_TWO;
+                        y *= Mth.SQRT_OF_TWO;
+                        x = Mth.clamp(x, -1, 1);
+                        y = Mth.clamp(y, -1, 1);
                     }
+
+                    x *= (mapWidth - lineHeight - 1) / 2f;
+                    y *= (mapHeight - lineHeight - 1) / 2f;
+
+                    pose.pushPose();
+
+                    pose.translate(mapWidth / 2f, mapHeight / 2f - lineHeight / 2f + 1f, 0);
+
+                    pose.pushPose();
+                    pose.translate(x, y, 0);
+                    gui.drawCenteredString(font, "N", 0, 0, 0xffff0000);
+                    pose.popPose();
+
+                    pose.pushPose();
+                    pose.translate(-y, x, 0);
+                    gui.drawCenteredString(font, "E", 0, 0, -1);
+                    pose.popPose();
+
+                    pose.pushPose();
+                    pose.translate(-x, -y, 0);
+                    gui.drawCenteredString(font, "S", 0, 0, -1);
+                    pose.popPose();
+
+                    pose.pushPose();
+                    pose.translate(y, -x, 0);
+                    gui.drawCenteredString(font, "W", 0, 0, -1);
+                    pose.popPose();
+
+                    pose.popPose();
+
                 } else {
                     gui.drawCenteredString(font, "N", mapWidth / 2, 1, -1);
                     gui.drawString(font, "E", mapWidth - font.width("E") - 1, (mapHeight - lineHeight) / 2 + 1, -1);
