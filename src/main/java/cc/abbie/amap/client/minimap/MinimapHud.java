@@ -7,8 +7,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 
@@ -28,6 +30,8 @@ public class MinimapHud implements HudRenderCallback {
     public static int mapHeight = 100;
     public static int offsetX = 5;
     public static int offsetY = 5;
+    public static boolean renderCompass = true;
+    public static boolean roundMap = true;
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -103,8 +107,8 @@ public class MinimapHud implements HudRenderCallback {
                     pose.rotateAround(Axis.ZN.rotationDegrees(rot + 180f), 0, 0, 0);
                 }
                 pose.translate(-playerPos.x % 16, -playerPos.z % 16, 0);
-                for (int x = -renderRadius; x < renderRadius; x++) {
-                    for (int y = -renderRadius; y < renderRadius; y++) {
+                for (int x = -renderRadius - 1; x < renderRadius; x++) {
+                    for (int y = -renderRadius - 1; y < renderRadius; y++) {
                         pose.pushPose();
                         {
                             pose.translate(x * 16, y * 16, 0);
@@ -130,6 +134,51 @@ public class MinimapHud implements HudRenderCallback {
                     gui.hLine(0, mapWidth - 1, mapHeight / 2, crosshairColour);
                 }
                 pose.popPose();
+            }
+
+            Font font = Minecraft.getInstance().font;
+            int lineHeight = font.lineHeight;
+
+            if (renderCompass) {
+                if (rotate) {
+                    if (roundMap) {
+                        pose.pushPose();
+
+                        pose.translate(mapWidth / 2f, mapHeight / 2f - lineHeight / 2f + 1f, 0);
+
+                        float x = Mth.sin(rot * Mth.DEG_TO_RAD) * (mapWidth - lineHeight - 1) / 2f;
+                        float y = Mth.cos(rot * Mth.DEG_TO_RAD) * (mapHeight - lineHeight - 1) / 2f;
+
+                        pose.pushPose();
+                        pose.translate(x, y, 0);
+                        gui.drawCenteredString(font, "N", 0, 0, 0xffff0000);
+                        pose.popPose();
+
+                        pose.pushPose();
+                        pose.translate(-y, x, 0);
+                        gui.drawCenteredString(font, "E", 0, 0, -1);
+                        pose.popPose();
+
+                        pose.pushPose();
+                        pose.translate(-x, -y, 0);
+                        gui.drawCenteredString(font, "S", 0, 0, -1);
+                        pose.popPose();
+
+                        pose.pushPose();
+                        pose.translate(y, -x, 0);
+                        gui.drawCenteredString(font, "W", 0, 0, -1);
+                        pose.popPose();
+
+                        pose.popPose();
+                    } else {
+                        // TODO
+                    }
+                } else {
+                    gui.drawCenteredString(font, "N", mapWidth / 2, 1, -1);
+                    gui.drawString(font, "E", mapWidth - font.width("E") - 1, (mapHeight - lineHeight) / 2 + 1, -1);
+                    gui.drawCenteredString(font, "S", mapWidth / 2, mapHeight - lineHeight, -1);
+                    gui.drawString(font, "W", 1, (mapHeight - lineHeight) / 2 + 1, -1);
+                }
             }
 
             if (!rotate || renderArrowWhenRotate) {
