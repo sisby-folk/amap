@@ -141,40 +141,44 @@ public class MinimapHud implements HudRenderCallback {
 
             if (renderCompass) {
                 if (rotate) {
-                    float x = Mth.sin(rot * Mth.DEG_TO_RAD);
-                    float y = Mth.cos(rot * Mth.DEG_TO_RAD);
+                    float x, y;
 
-                    if (!roundMap) {
-                        x *= Mth.SQRT_OF_TWO;
-                        y *= Mth.SQRT_OF_TWO;
-                        x = Mth.clamp(x, -1, 1);
-                        y = Mth.clamp(y, -1, 1);
+                    if (roundMap) {
+                        float rotInRadians = rot * Mth.DEG_TO_RAD;
+                        x = Mth.sin(rotInRadians);
+                        y = Mth.cos(rotInRadians);
+                    } else {
+                        float clampedRot = Mth.wrapDegrees(rot) * Mth.DEG_TO_RAD;
+                        x = Mth.clamp(weirdTan(clampedRot), -1f, 1f);
+                        y = Mth.clamp(weirdTan(clampedRot + Mth.HALF_PI), -1f, 1f);
                     }
 
-                    x *= (mapWidth - lineHeight - 1) / 2f;
-                    y *= (mapHeight - lineHeight - 1) / 2f;
+                    float xns = x * (mapWidth - lineHeight - 1) / 2f;
+                    float yns = y * (mapHeight - lineHeight - 1) / 2f;
+                    float yew = x * (mapHeight - lineHeight - 1) / 2f;
+                    float xew = y * (mapWidth - lineHeight - 1) / 2f;
 
                     pose.pushPose();
 
                     pose.translate(mapWidth / 2f, mapHeight / 2f - lineHeight / 2f + 1f, 0);
 
                     pose.pushPose();
-                    pose.translate(x, y, 0);
+                    pose.translate(xns, yns, 0);
                     gui.drawCenteredString(font, "N", 0, 0, 0xffff0000);
                     pose.popPose();
 
                     pose.pushPose();
-                    pose.translate(-y, x, 0);
+                    pose.translate(-xew, yew, 0);
                     gui.drawCenteredString(font, "E", 0, 0, -1);
                     pose.popPose();
 
                     pose.pushPose();
-                    pose.translate(-x, -y, 0);
+                    pose.translate(-xns, -yns, 0);
                     gui.drawCenteredString(font, "S", 0, 0, -1);
                     pose.popPose();
 
                     pose.pushPose();
-                    pose.translate(y, -x, 0);
+                    pose.translate(xew, -yew, 0);
                     gui.drawCenteredString(font, "W", 0, 0, -1);
                     pose.popPose();
 
@@ -227,6 +231,15 @@ public class MinimapHud implements HudRenderCallback {
 
         }
         pose.popPose();
+    }
+
+    // -3pi/2 < a < 3pi/2
+    private static float weirdTan(float a) {
+        float t = (float) Math.tan(a);
+        if (-Mth.HALF_PI <= a && a < Mth.HALF_PI) {
+            return t;
+        }
+        return -t;
     }
 
     public static void zoomOut() {
