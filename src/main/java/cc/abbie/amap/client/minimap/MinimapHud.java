@@ -141,44 +141,51 @@ public class MinimapHud implements HudRenderCallback {
 
             if (renderCompass) {
                 if (rotate) {
-                    float x, y;
+                    float xn, yn, xe, ye;
+                    float w = (mapWidth - lineHeight - 1) / 2f;
+                    float h = (mapHeight - lineHeight - 1) / 2f;
+                    float theta = Mth.wrapDegrees(rot) * Mth.DEG_TO_RAD;
 
                     if (roundMap) {
-                        float rotInRadians = rot * Mth.DEG_TO_RAD;
-                        x = Mth.sin(rotInRadians);
-                        y = Mth.cos(rotInRadians);
+                        float sin = Mth.sin(theta);
+                        float cos = Mth.cos(theta);
+                        float denomns = Mth.sqrt(Mth.square(w * cos) + Mth.square(h * sin));
+                        float denomew = Mth.sqrt(Mth.square(h * cos) + Mth.square(w * sin));
+                        float wh = w * h;
+                        xn = (wh * sin) / denomns;
+                        yn = (wh * cos) / denomns;
+                        xe = -(wh * cos) / denomew;
+                        ye = (wh * sin) / denomew;
                     } else {
-                        float clampedRot = Mth.wrapDegrees(rot) * Mth.DEG_TO_RAD;
-                        x = Mth.clamp(weirdTan(clampedRot), -1f, 1f);
-                        y = Mth.clamp(weirdTan(clampedRot + Mth.HALF_PI), -1f, 1f);
+                        float tanx = weirdTan(theta);
+                        float tany = weirdTan(theta + Mth.HALF_PI);
+                        xn = Mth.clamp(h * tanx, -w, w);
+                        yn = Mth.clamp(w * tany, -h, h);
+                        xe = -Mth.clamp(h * tany, -w, w);
+                        ye = Mth.clamp(w * tanx, -h, h);
                     }
 
-                    float xns = x * (mapWidth - lineHeight - 1) / 2f;
-                    float yns = y * (mapHeight - lineHeight - 1) / 2f;
-                    float yew = x * (mapHeight - lineHeight - 1) / 2f;
-                    float xew = y * (mapWidth - lineHeight - 1) / 2f;
-
                     pose.pushPose();
 
-                    pose.translate(mapWidth / 2f, mapHeight / 2f - lineHeight / 2f + 1f, 0);
+                    pose.translate(mapWidth / 2f, (mapHeight - lineHeight) / 2f + 1f, 0);
 
                     pose.pushPose();
-                    pose.translate(xns, yns, 0);
+                    pose.translate(xn, yn, 0);
                     gui.drawCenteredString(font, "N", 0, 0, 0xffff0000);
                     pose.popPose();
 
                     pose.pushPose();
-                    pose.translate(-xew, yew, 0);
+                    pose.translate(xe, ye, 0);
                     gui.drawCenteredString(font, "E", 0, 0, -1);
                     pose.popPose();
 
                     pose.pushPose();
-                    pose.translate(-xns, -yns, 0);
+                    pose.translate(-xn, -yn, 0);
                     gui.drawCenteredString(font, "S", 0, 0, -1);
                     pose.popPose();
 
                     pose.pushPose();
-                    pose.translate(xew, -yew, 0);
+                    pose.translate(-xe, -ye, 0);
                     gui.drawCenteredString(font, "W", 0, 0, -1);
                     pose.popPose();
 
