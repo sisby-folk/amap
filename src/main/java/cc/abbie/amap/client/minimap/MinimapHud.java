@@ -258,9 +258,9 @@ public class MinimapHud implements HudRenderCallback {
     }
 
     public enum Position {
-        TOP_LEFT,
         TOP_RIGHT,
-        BOTTOM_LEFT,
-        BOTTOM_RIGHT
+        BOTTOM_RIGHT,
+        TOP_LEFT,
+        BOTTOM_LEFT
     }
 }
