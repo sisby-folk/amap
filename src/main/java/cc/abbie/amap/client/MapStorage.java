@@ -1,14 +1,7 @@
 package cc.abbie.amap.client;
 
 import com.google.common.collect.Multimap;
-import folk.sisby.surveyor.WorldSummary;
-import folk.sisby.surveyor.client.SurveyorClientEvents;
-import folk.sisby.surveyor.landmark.LandmarkType;
-import folk.sisby.surveyor.terrain.ChunkSummary;
-import folk.sisby.surveyor.terrain.LayerSummary;
-import folk.sisby.surveyor.terrain.RegionSummary;
-import folk.sisby.surveyor.terrain.WorldTerrainSummary;
-import folk.sisby.surveyor.util.RegistryPalette;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -19,18 +12,30 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
+import folk.sisby.surveyor.WorldSummary;
+import folk.sisby.surveyor.client.SurveyorClientEvents;
+import folk.sisby.surveyor.landmark.Landmark;
+import folk.sisby.surveyor.landmark.LandmarkType;
+import folk.sisby.surveyor.landmark.WorldLandmarks;
+import folk.sisby.surveyor.terrain.ChunkSummary;
+import folk.sisby.surveyor.terrain.LayerSummary;
+import folk.sisby.surveyor.terrain.RegionSummary;
+import folk.sisby.surveyor.terrain.WorldTerrainSummary;
+import folk.sisby.surveyor.util.RegistryPalette;
+
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 // mostly copied from https://github.com/HestiMae/hoofprint/blob/777a182f5e0136d8e3b9a5b9c9362fe6dc41ea72/src/main/java/garden/hestia/hoofprint/HoofprintMapStorage.java
-public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClientEvents.TerrainUpdated {
+public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClientEvents.TerrainUpdated, SurveyorClientEvents.LandmarksAdded, SurveyorClientEvents.LandmarksRemoved {
     public static final MapStorage INSTANCE = new MapStorage();
 
     public Map<ChunkPos, LayerSummary.Raw[][]> regions = new HashMap<>();
     public Map<ChunkPos, RegistryPalette<Block>.ValueView> blockPalettes = new HashMap<>();
     public Map<ChunkPos, RegistryPalette<Biome>.ValueView> biomePalettes = new HashMap<>();
+    public Map<LandmarkType<?>, Map<BlockPos, Landmark<?>>> landmarks = new HashMap<>();
 
     @Override
     public void onTerrainUpdated(Level level, WorldTerrainSummary terrainSummary, Collection<ChunkPos> chunks) {
@@ -51,10 +56,25 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
     }
 
     @Override
-    public void onWorldLoad(ClientLevel clientLevel, WorldSummary summary, LocalPlayer player, Map<ChunkPos, BitSet> terrain, Multimap<ResourceKey<Structure>, ChunkPos> structures, Multimap<LandmarkType<?>, BlockPos> landmarks) {
+    public void onWorldLoad(ClientLevel clientLevel, WorldSummary summary, LocalPlayer player, Map<ChunkPos, BitSet> terrain, Multimap<ResourceKey<Structure>, ChunkPos> structures, Multimap<LandmarkType<?>, BlockPos> multimap) {
         regions.clear();
         biomePalettes.clear();
         blockPalettes.clear();
+        updateLandmarks(summary.landmarks());
         onTerrainUpdated(clientLevel, summary.terrain(), WorldTerrainSummary.toKeys(terrain));
+    }
+
+    @Override
+    public void onLandmarksAdded(Level level, WorldLandmarks worldLandmarks, Multimap<LandmarkType<?>, BlockPos> multimap) {
+        updateLandmarks(worldLandmarks);
+    }
+
+    @Override
+    public void onLandmarksRemoved(Level level, WorldLandmarks worldLandmarks, Multimap<LandmarkType<?>, BlockPos> multimap) {
+        updateLandmarks(worldLandmarks);
+    }
+
+    private void updateLandmarks(WorldLandmarks worldLandmarks) {
+        landmarks = worldLandmarks.asMap(null);
     }
 }
