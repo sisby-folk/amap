@@ -52,6 +52,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
                     = layerSummary;
             blockPalettes.put(pos, terrainSummary.getBlockPalette(pos));
             biomePalettes.put(pos, terrainSummary.getBiomePalette(pos));
+            ChunkRenderer.dirtyChunks.add(pos);
         }
     }
 
@@ -60,6 +61,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
         regions.clear();
         biomePalettes.clear();
         blockPalettes.clear();
+        ChunkRenderer.clear();
         updateLandmarks(summary.landmarks());
         onTerrainUpdated(clientLevel, summary.terrain(), WorldTerrainSummary.toKeys(terrain));
     }

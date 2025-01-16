@@ -1,23 +1,37 @@
 package cc.abbie.amap.client;
 
-import folk.sisby.surveyor.terrain.LayerSummary;
-import folk.sisby.surveyor.terrain.RegionSummary;
+import com.mojang.blaze3d.platform.NativeImage;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.MapColor;
 
+import folk.sisby.surveyor.terrain.LayerSummary;
+import folk.sisby.surveyor.terrain.RegionSummary;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class ChunkRenderer {
 
     public static Mode mode = Mode.NORMAL;
+    public static Map<ChunkPos, ResourceLocation> textures = new HashMap<>();
+    public static Set<ChunkPos> dirtyChunks = new HashSet<>();
 
     /**
      * Renders the specified chunk to the screen at 0,0 (pose translation recommended)
@@ -59,76 +73,103 @@ public class ChunkRenderer {
         var northBiomes = northSumm.biomes();
         if (blocks == null || biomes == null || northBlocks == null || northBiomes == null) return;
 
-        FillBatcher fillBatcher = new FillBatcher(gui);
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                int idx = 16 * x + y;
-                if (!summ.exists().get(idx)) continue;
-
-                Block block = blockPalette.byId(blocks[idx]);
-                Biome biome = biomePalette.byId(biomes[idx]);
-                if (block == null || biome == null) continue;
-
-                int colour = switch (mode) {
-                    case NORMAL -> {
-                        MapColor.Brightness brightness;
-                        int waterDepth = summ.waterDepths()[idx];
-                        MapColor mapColor;
-                        if (waterDepth > 0) {
-//                            colour = biome.getWaterColor() | 0xff000000;
-                            double f = (double) waterDepth * 0.1 + (double) (x + y & 1) * 0.2;
-                            if (f < 0.5) {
-                                brightness = MapColor.Brightness.HIGH;
-                            } else if (f > 0.9) {
-                                brightness = MapColor.Brightness.LOW;
-                            } else {
-                                brightness = MapColor.Brightness.NORMAL;
-                            }
-                            mapColor = MapColor.WATER;
-                        } else {
-                            int depth = summ.depths()[idx];
-                            int northDepth;
-                            if (y > 0) {
-                                int northIdx = 16 * x + y - 1;
-                                if (!summ.exists().get(northIdx)) {
-                                    northDepth = Integer.MAX_VALUE;
-                                } else {
-                                    northDepth = summ.depths()[northIdx] - summ.waterDepths()[northIdx];
-                                }
-                            } else {
-                                int northIdx = 16 * x + 15;
-                                if (!northSumm.exists().get(northIdx)) {
-                                    northDepth = Integer.MAX_VALUE;
-                                } else {
-                                    northDepth = northSumm.depths()[northIdx] - northSumm.waterDepths()[northIdx];
-                                }
-                            }
-                            if (depth == northDepth) {
-                                brightness = MapColor.Brightness.NORMAL;
-                            } else if (depth < northDepth) {
-                                brightness = MapColor.Brightness.HIGH;
-                            } else {
-                                brightness = MapColor.Brightness.LOW;
-                            }
-                            mapColor = block.defaultMapColor();
-                        }
-                        yield GuiUtil.abgrToArgb(mapColor.calculateRGBColor(brightness));
-                    }
-                    case BIOME -> {
-                        Holder<Biome> biomeHolder = biomeRegistry.wrapAsHolder(biome);
-                        if (biomeHolder.is(BiomeTags.IS_RIVER) || biomeHolder.is(BiomeTags.IS_OCEAN) || biomeHolder.is(BiomeTags.IS_DEEP_OCEAN)) {
-                            yield biome.getWaterColor();
-                        } else if (biomeHolder.is(BiomeTags.IS_NETHER)) {
-                            yield biome.getFogColor();
-                        } else {
-                            yield biome.getGrassColor(0, 0);
-                        }
-                    }
-                };
-                fillBatcher.add(x, y, x + 1, y + 1, 0, colour | 0xff000000);
-            }
+        DynamicTexture texture;
+        ResourceLocation textureLocation;
+        if (textures.containsKey(regionPos)) {
+            textureLocation = textures.get(regionPos);
+            texture = (DynamicTexture) client.getTextureManager().getTexture(textureLocation);
+        } else {
+            texture = new DynamicTexture(512, 512, false);
+            // needed otherwise we may get a texture filled with garbage!
+            texture.getPixels().fillRect(0, 0, 512, 512, 0);
+            textureLocation = client.getTextureManager().register("emi_ores/region/", texture);
+            textures.put(regionPos, textureLocation);
         }
-        fillBatcher.close();
+        if (dirtyChunks.contains(chunkPos)) {
+            dirtyChunks.remove(chunkPos);
+            NativeImage pixels = texture.getPixels();
+            for (int x = 0; x < 16; x++) {
+                for (int y = 0; y < 16; y++) {
+                    int idx = 16 * x + y;
+                    if (!summ.exists().get(idx)) continue;
+
+                    Block block = blockPalette.byId(blocks[idx]);
+                    Biome biome = biomePalette.byId(biomes[idx]);
+                    if (block == null || biome == null) continue;
+
+                    int colour = switch (mode) {
+                        case NORMAL -> {
+                            MapColor.Brightness brightness;
+                            int waterDepth = summ.waterDepths()[idx];
+                            MapColor mapColor;
+                            if (waterDepth > 0) {
+//                            colour = biome.getWaterColor() | 0xff000000;
+                                double f = (double) waterDepth * 0.1 + (double) (x + y & 1) * 0.2;
+                                if (f < 0.5) {
+                                    brightness = MapColor.Brightness.HIGH;
+                                } else if (f > 0.9) {
+                                    brightness = MapColor.Brightness.LOW;
+                                } else {
+                                    brightness = MapColor.Brightness.NORMAL;
+                                }
+                                mapColor = MapColor.WATER;
+                            } else {
+                                int depth = summ.depths()[idx];
+                                int northDepth;
+                                if (y > 0) {
+                                    int northIdx = 16 * x + y - 1;
+                                    if (!summ.exists().get(northIdx)) {
+                                        northDepth = Integer.MAX_VALUE;
+                                    } else {
+                                        northDepth = summ.depths()[northIdx] - summ.waterDepths()[northIdx];
+                                    }
+                                } else {
+                                    int northIdx = 16 * x + 15;
+                                    if (!northSumm.exists().get(northIdx)) {
+                                        northDepth = Integer.MAX_VALUE;
+                                    } else {
+                                        northDepth = northSumm.depths()[northIdx] - northSumm.waterDepths()[northIdx];
+                                    }
+                                }
+                                if (depth == northDepth) {
+                                    brightness = MapColor.Brightness.NORMAL;
+                                } else if (depth < northDepth) {
+                                    brightness = MapColor.Brightness.HIGH;
+                                } else {
+                                    brightness = MapColor.Brightness.LOW;
+                                }
+                                mapColor = block.defaultMapColor();
+                            }
+                            yield mapColor.calculateRGBColor(brightness);
+                        }
+                        case BIOME -> FastColor.ABGR32.fromArgb32(getBiomeColourArgb(biomeRegistry.wrapAsHolder(biome)));
+                    };
+                    pixels.setPixelRGBA(16 * regionRelativePos.x + x, 16 * regionRelativePos.z + y, colour | 0xff000000);
+                }
+            }
+            texture.upload();
+        }
+        gui.blit(textureLocation, 0, 0, 16 * regionRelativePos.x, 16 * regionRelativePos.z, 16, 16, 512, 512);
+    }
+
+    private static int getBiomeColourArgb(Holder<Biome> biomeHolder) {
+        Biome biome = biomeHolder.value();
+        if (biomeHolder.is(BiomeTags.IS_RIVER) || biomeHolder.is(BiomeTags.IS_OCEAN) || biomeHolder.is(BiomeTags.IS_DEEP_OCEAN)) {
+            return biome.getWaterColor();
+        } else if (biomeHolder.is(BiomeTags.IS_NETHER)) {
+            return biome.getFogColor();
+        } else {
+            return biome.getGrassColor(0, 0);
+        }
+    }
+
+    public static void clear() {
+        TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+        for (ResourceLocation id : textures.values()) {
+            textureManager.getTexture(id).close();
+        }
+        textures.clear();
+        dirtyChunks.clear();
     }
 
     public enum Mode {
