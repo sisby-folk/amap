@@ -33,13 +33,7 @@ public class ChunkRenderer {
     public static Map<ChunkPos, ResourceLocation> textures = new HashMap<>();
     public static Set<ChunkPos> dirtyChunks = new HashSet<>();
 
-    /**
-     * Renders the specified chunk to the screen at 0,0 (pose translation recommended)
-     *
-     * @param gui      the {@link GuiGraphics} to render with
-     * @param chunkPos chunk position in the current {@link net.minecraft.client.multiplayer.ClientLevel} to render
-     */
-    public static void renderChunk(GuiGraphics gui, ChunkPos chunkPos) {
+    public static void bakeChunk(ChunkPos chunkPos) {
         Minecraft client = Minecraft.getInstance();
         ClientLevel level = client.level;
         if (level == null) return;
@@ -149,7 +143,21 @@ public class ChunkRenderer {
             }
             texture.upload();
         }
-        gui.blit(textureLocation, 0, 0, 16 * regionRelativePos.x, 16 * regionRelativePos.z, 16, 16, 512, 512);
+    }
+
+    private static void bakeRegion(ChunkPos regionPos) {
+        for (int x = 0; x < 32; x++) {
+            for (int z = 0; z < 32; z++) {
+                bakeChunk(new ChunkPos(32 * regionPos.x + x, 32 * regionPos.z + z));
+            }
+        }
+    }
+
+    public static void renderRegion(GuiGraphics gui, ChunkPos regionPos) {
+        bakeRegion(regionPos);
+        if (textures.containsKey(regionPos)) {
+            gui.blit(textures.get(regionPos), 0, 0, 0, 0, 512, 512, 512, 512);
+        }
     }
 
     private static int getBiomeColourArgb(Holder<Biome> biomeHolder) {

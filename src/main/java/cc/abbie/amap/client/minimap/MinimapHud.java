@@ -104,7 +104,7 @@ public class MinimapHud implements HudRenderCallback {
             if (client.player != null) {
                 rot = client.player.getViewYRot(tickDelta);
                 playerPos = client.player.getEyePosition(tickDelta);
-                playerChunkPos = new ChunkPos((int) (playerPos.x / 16), (int) (playerPos.z / 16));
+                playerChunkPos = new ChunkPos(Mth.floor(playerPos.x) >> 4, Mth.floor(playerPos.z) >> 4);
             } else {
                 rot = 0f;
                 playerChunkPos = ChunkPos.ZERO;
@@ -120,14 +120,14 @@ public class MinimapHud implements HudRenderCallback {
                 if (rotate) {
                     pose.rotateAround(Axis.ZN.rotationDegrees(rot + 180f), 0, 0, 0);
                 }
-                pose.translate(-playerPos.x % 16, -playerPos.z % 16, 0);
-                for (int x = -renderRadius - 1; x < renderRadius; x++) {
-                    for (int y = -renderRadius - 1; y < renderRadius; y++) {
+                for (int x = -1; x <= 1; x++) {
+                    for (int z = -1; z <= 1; z++) {
+                        ChunkPos regionPos = new ChunkPos(playerChunkPos.getRegionX() + x, playerChunkPos.getRegionZ() + z);
                         pose.pushPose();
-                        {
-                            pose.translate(x * 16, y * 16, 0);
-                            ChunkRenderer.renderChunk(gui, new ChunkPos(playerChunkPos.x + x, playerChunkPos.z + y));
-                        }
+                        double translateX = -Mth.positiveModulo(playerPos.x, 512) + (x << 9);
+                        double translateY = -Mth.positiveModulo(playerPos.z, 512) + (z << 9);
+                        pose.translate(translateX, translateY, 0);
+                        ChunkRenderer.renderRegion(gui, regionPos);
                         pose.popPose();
                     }
                 }
