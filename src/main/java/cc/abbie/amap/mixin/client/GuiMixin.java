@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Gui.class)
 public abstract class GuiMixin {
-    @ModifyExpressionValue(method = "renderEffects", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/Gui;screenWidth:I"))
+    @ModifyExpressionValue(method = "renderEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;guiWidth()I"))
     private int pushEffects(int original) {
         if (!MinimapHud.enable || MinimapHud.position != MinimapHud.Position.TOP_RIGHT) return original;
 

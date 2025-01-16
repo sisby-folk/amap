@@ -18,10 +18,10 @@ public class FillBatcher implements AutoCloseable {
     }
 
     public void add(int x1, int y1, int x2, int y2, int z, int color) {
-        vertexConsumer.vertex(matrix4f, x1, y1, z).color(color).endVertex();
-        vertexConsumer.vertex(matrix4f, x1, y2, z).color(color).endVertex();
-        vertexConsumer.vertex(matrix4f, x2, y2, z).color(color).endVertex();
-        vertexConsumer.vertex(matrix4f, x2, y1, z).color(color).endVertex();
+        vertexConsumer.addVertex(matrix4f, x1, y1, z).setColor(color);
+        vertexConsumer.addVertex(matrix4f, x1, y2, z).setColor(color);
+        vertexConsumer.addVertex(matrix4f, x2, y2, z).setColor(color);
+        vertexConsumer.addVertex(matrix4f, x2, y1, z).setColor(color);
     }
 
     @Override

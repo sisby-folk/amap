@@ -1,10 +1,11 @@
 package cc.abbie.amap.client.minimap;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 
 import cc.abbie.amap.AMap;
@@ -84,6 +85,11 @@ public class MinimapConfigScreen extends Screen {
             gui.fill(x, y, maxX, maxY, 0xa0000000);
         });
         layout.visitWidgets(this::addRenderableWidget);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // no-op
     }
 
     @Override

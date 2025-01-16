@@ -24,7 +24,7 @@ public class AMapWorldRenderer implements WorldRenderEvents.AfterEntities {
         ClientLevel level = context.world();
         Camera camera = context.camera();
         PoseStack pose = context.matrixStack();
-        float partialTick = context.tickDelta();
+        float partialTick = context.tickCounter().getGameTimeDeltaPartialTick(false);
         MultiBufferSource consumers = context.consumers();
         long gameTime = level.getGameTime();
         Vec3 cameraPos = camera.getPosition();
@@ -36,7 +36,7 @@ public class AMapWorldRenderer implements WorldRenderEvents.AfterEntities {
             for (var entry2 : entry.getValue().entrySet()) {
                 BlockPos pos = entry2.getKey();
                 Landmark<?> landmark = entry2.getValue();
-                float[] color = Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColors();
+                int color = Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColor();
 
                 pose.pushPose();
                 pose.translate(pos.getX() - cameraPos.x, 0, pos.getZ() - cameraPos.z);

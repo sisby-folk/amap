@@ -26,6 +26,6 @@ public class AMap implements ModInitializer {
     }
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

@@ -1,5 +1,7 @@
 package cc.abbie.amap.client;
 
+import net.minecraft.util.FastColor;
+
 public class GuiUtil {
     public static int abgrToArgb(int abgr) {
         int a = (abgr >> 24) & 0xff;
@@ -9,4 +11,11 @@ public class GuiUtil {
         return a << 24 | r << 16 | g << 8 | b;
     }
 
+    public static float[] toFloats(int color) {
+        return new float[] {
+                FastColor.ARGB32.red(color) / 255f,
+                FastColor.ARGB32.green(color) / 255f,
+                FastColor.ARGB32.blue(color) / 255f
+        };
+    }
 }

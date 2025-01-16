@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.ChunkRenderer;
+import cc.abbie.amap.client.GuiUtil;
 import cc.abbie.amap.client.MapStorage;
 import folk.sisby.surveyor.landmark.Landmark;
 import folk.sisby.surveyor.landmark.LandmarkType;
@@ -45,9 +47,10 @@ public class MinimapHud implements HudRenderCallback {
     public static final ResourceLocation defaultLandmarkTexture = AMap.id("textures/landmark/default_small.png");
 
     @Override
-    public void onHudRender(GuiGraphics gui, float tickDelta) {
+    public void onHudRender(GuiGraphics gui, DeltaTracker deltaTracker) {
         if (!enable) return;
 
+        float tickDelta = deltaTracker.getGameTimeDeltaPartialTick(false);
         PoseStack pose = gui.pose();
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
@@ -152,7 +155,7 @@ public class MinimapHud implements HudRenderCallback {
                 for (var entry2 : entry.getValue().entrySet()) {
                     BlockPos pos = entry2.getKey();
                     Landmark<?> landmark = entry2.getValue();
-                    float[] color = Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColors();
+                    float[] color = GuiUtil.toFloats(Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColor());
                     float x = (float) mapWidth / 2;
                     float y = (float) mapHeight / 2;
 
