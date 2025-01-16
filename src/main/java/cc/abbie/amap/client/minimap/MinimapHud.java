@@ -1,18 +1,28 @@
 package cc.abbie.amap.client.minimap;
 
-import cc.abbie.amap.AMap;
-import cc.abbie.amap.client.ChunkRenderer;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
+
+import cc.abbie.amap.AMap;
+import cc.abbie.amap.client.ChunkRenderer;
+import cc.abbie.amap.client.MapStorage;
+import folk.sisby.surveyor.landmark.Landmark;
+import folk.sisby.surveyor.landmark.LandmarkType;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+
+import java.util.Objects;
 
 public class MinimapHud implements HudRenderCallback {
     public static boolean enable = true;
@@ -32,6 +42,7 @@ public class MinimapHud implements HudRenderCallback {
     public static int offsetY = 5;
     public static boolean renderCompass = true;
     public static boolean roundMap = true;
+    public static final ResourceLocation defaultLandmarkTexture = AMap.id("textures/landmark/default_small.png");
 
     @Override
     public void onHudRender(GuiGraphics gui, float tickDelta) {
@@ -134,6 +145,39 @@ public class MinimapHud implements HudRenderCallback {
                     gui.hLine(0, mapWidth - 1, mapHeight / 2, crosshairColour);
                 }
                 pose.popPose();
+            }
+
+            for (var entry : MapStorage.INSTANCE.landmarks.entrySet()) {
+                LandmarkType<?> type = entry.getKey();
+                for (var entry2 : entry.getValue().entrySet()) {
+                    BlockPos pos = entry2.getKey();
+                    Landmark<?> landmark = entry2.getValue();
+                    float[] color = Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColors();
+                    float x = (float) mapWidth / 2;
+                    float y = (float) mapHeight / 2;
+
+                    float xdiff = (float) ((pos.getX() - playerPos.x + 0.5) * realScale);
+                    float ydiff = (float) ((pos.getZ() - playerPos.z + 0.5) * realScale);
+                    if (rotate) {
+                        float theta = -rot * Mth.DEG_TO_RAD + Mth.PI;
+                        float sin = Mth.sin(theta);
+                        float cos = Mth.cos(theta);
+                        x += xdiff * cos - ydiff * sin;
+                        y += ydiff * cos + xdiff * sin;
+                    } else {
+                        x += xdiff;
+                        y += ydiff;
+                    }
+
+                    x = Mth.clamp(x, 0, mapWidth);
+                    y = Mth.clamp(y, 0, mapHeight);
+
+                    pose.pushPose();
+                    pose.translate(x, y, 0);
+                    RenderSystem.setShaderColor(color[0], color[1], color[2], 1);
+                    gui.blit(defaultLandmarkTexture, -4, -4, 0, 0, 8, 8, 8, 8);
+                    pose.popPose();
+                }
             }
 
             Font font = Minecraft.getInstance().font;
