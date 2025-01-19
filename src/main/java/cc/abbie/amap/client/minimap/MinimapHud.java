@@ -27,15 +27,17 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import java.util.Objects;
 
 public class MinimapHud implements HudRenderCallback {
+    public static final int MIN_SCALE = -2;
+    public static final int MAX_SCALE = 2;
+    private static final int CROSSHAIR_COLOUR = 0xa0a0a0a0;
+    public static final ResourceLocation DEFAULT_LANDMARK_TEXTURE = AMap.id("textures/landmark/default_small.png");
+
     public static boolean enable = true;
     public static int scale = 0;
-    public static final int minScale = -2;
-    public static final int maxScale = 2;
     public static boolean rotate = true;
     public static boolean renderBackground = false;
     public static boolean renderFrame = true;
     public static boolean renderCrosshair = true;
-    private static final int crosshairColour = 0xa0a0a0a0;
     public static Position position = Position.TOP_RIGHT;
     public static boolean renderArrowWhenRotate = false;
     public static int mapWidth = 100;
@@ -44,7 +46,6 @@ public class MinimapHud implements HudRenderCallback {
     public static int offsetY = 5;
     public static boolean renderCompass = true;
     public static boolean roundMap = true;
-    public static final ResourceLocation defaultLandmarkTexture = AMap.id("textures/landmark/default_small.png");
 
     @Override
     public void onHudRender(GuiGraphics gui, DeltaTracker deltaTracker) {
@@ -139,13 +140,13 @@ public class MinimapHud implements HudRenderCallback {
                 pose.pushPose();
                 {
                     pose.translate(-0.5f, 0, 0);
-                    gui.vLine(mapWidth / 2, -1, mapHeight, crosshairColour);
+                    gui.vLine(mapWidth / 2, -1, mapHeight, CROSSHAIR_COLOUR);
                 }
                 pose.popPose();
                 pose.pushPose();
                 {
                     pose.translate(0, -0.5f, 0);
-                    gui.hLine(0, mapWidth - 1, mapHeight / 2, crosshairColour);
+                    gui.hLine(0, mapWidth - 1, mapHeight / 2, CROSSHAIR_COLOUR);
                 }
                 pose.popPose();
             }
@@ -178,7 +179,7 @@ public class MinimapHud implements HudRenderCallback {
                     pose.pushPose();
                     pose.translate(x, y, 0);
                     RenderSystem.setShaderColor(color[0], color[1], color[2], 1);
-                    gui.blit(defaultLandmarkTexture, -4, -4, 0, 0, 8, 8, 8, 8);
+                    gui.blit(DEFAULT_LANDMARK_TEXTURE, -4, -4, 0, 0, 8, 8, 8, 8);
                     pose.popPose();
                 }
             }
@@ -297,11 +298,11 @@ public class MinimapHud implements HudRenderCallback {
     }
 
     public static void zoomOut() {
-        if (scale > minScale) scale--;
+        if (scale > MIN_SCALE) scale--;
     }
 
     public static void zoomIn() {
-        if (scale < maxScale) scale++;
+        if (scale < MAX_SCALE) scale++;
     }
 
     public enum Position {

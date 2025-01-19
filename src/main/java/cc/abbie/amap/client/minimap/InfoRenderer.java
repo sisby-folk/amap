@@ -48,7 +48,7 @@ public class InfoRenderer {
         }
 
         if (showMenuKey) {
-            Component infoLine = Component.translatable("info.amap.menuKey", AMapKeybinds.openMinimapConfig.getTranslatedKeyMessage());
+            Component infoLine = Component.translatable("info.amap.menuKey", AMapKeybinds.OPEN_MINIMAP_CONFIG.getTranslatedKeyMessage());
             int textWidth = font.width(infoLine.getVisualOrderText());
             gui.drawString(font, infoLine, rightX - textWidth, yOffset, -1);
             yOffset += lineHeight;

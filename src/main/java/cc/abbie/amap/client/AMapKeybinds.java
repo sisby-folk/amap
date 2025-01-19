@@ -11,21 +11,21 @@ import org.lwjgl.glfw.GLFW;
 
 public class AMapKeybinds implements ClientTickEvents.EndTick {
 
-    private static final String worldMapCategory = "key.categories.amap.worldmap";
-    public static final KeyMapping openWorldmap = new KeyMapping("key.amap.worldmap.open", GLFW.GLFW_KEY_M, worldMapCategory);
+    private static final String WORLD_MAP_CATEGORY = "key.categories.amap.worldmap";
+    public static final KeyMapping OPEN_WORLDMAP = new KeyMapping("key.amap.worldmap.open", GLFW.GLFW_KEY_M, WORLD_MAP_CATEGORY);
 
-    private static final String minimapCategory = "key.categories.amap.minimap";
-    private static final KeyMapping zoomOutMinimap = new KeyMapping("key.amap.minimap.zoom_out", GLFW.GLFW_KEY_MINUS, minimapCategory);
-    private static final KeyMapping zoomInMinimap = new KeyMapping("key.amap.minimap.zoom_in", GLFW.GLFW_KEY_EQUAL, minimapCategory);
-    private static final KeyMapping toggleRotation = new KeyMapping("key.amap.minimap.toggle_rotation", GLFW.GLFW_KEY_R, minimapCategory);
-    public static final KeyMapping openMinimapConfig = new KeyMapping("key.amap.minimap.config", GLFW.GLFW_KEY_PERIOD, minimapCategory);
+    private static final String MINIMAP_CATEGORY = "key.categories.amap.minimap";
+    private static final KeyMapping ZOOM_OUT_MINIMAP = new KeyMapping("key.amap.minimap.zoom_out", GLFW.GLFW_KEY_MINUS, MINIMAP_CATEGORY);
+    private static final KeyMapping ZOOM_IN_MINIMAP = new KeyMapping("key.amap.minimap.zoom_in", GLFW.GLFW_KEY_EQUAL, MINIMAP_CATEGORY);
+    private static final KeyMapping TOGGLE_ROTATION = new KeyMapping("key.amap.minimap.toggle_rotation", GLFW.GLFW_KEY_R, MINIMAP_CATEGORY);
+    public static final KeyMapping OPEN_MINIMAP_CONFIG = new KeyMapping("key.amap.minimap.config", GLFW.GLFW_KEY_PERIOD, MINIMAP_CATEGORY);
 
     public static void register() {
-        KeyBindingHelper.registerKeyBinding(openWorldmap);
-        KeyBindingHelper.registerKeyBinding(zoomOutMinimap);
-        KeyBindingHelper.registerKeyBinding(zoomInMinimap);
-        KeyBindingHelper.registerKeyBinding(toggleRotation);
-        KeyBindingHelper.registerKeyBinding(openMinimapConfig);
+        KeyBindingHelper.registerKeyBinding(OPEN_WORLDMAP);
+        KeyBindingHelper.registerKeyBinding(ZOOM_OUT_MINIMAP);
+        KeyBindingHelper.registerKeyBinding(ZOOM_IN_MINIMAP);
+        KeyBindingHelper.registerKeyBinding(TOGGLE_ROTATION);
+        KeyBindingHelper.registerKeyBinding(OPEN_MINIMAP_CONFIG);
 
         ClientTickEvents.END_CLIENT_TICK.register(new AMapKeybinds());
     }
@@ -33,15 +33,15 @@ public class AMapKeybinds implements ClientTickEvents.EndTick {
 
     @Override
     public void onEndTick(Minecraft client) {
-        if (zoomOutMinimap.consumeClick()) {
+        if (ZOOM_OUT_MINIMAP.consumeClick()) {
             MinimapHud.zoomOut();
-        } else if (zoomInMinimap.consumeClick()) {
+        } else if (ZOOM_IN_MINIMAP.consumeClick()) {
             MinimapHud.zoomIn();
-        } else if (openWorldmap.consumeClick()) {
+        } else if (OPEN_WORLDMAP.consumeClick()) {
             client.setScreen(new WorldMapScreen());
-        } else if (toggleRotation.consumeClick()) {
+        } else if (TOGGLE_ROTATION.consumeClick()) {
             MinimapHud.rotate = !MinimapHud.rotate;
-        } else if (openMinimapConfig.consumeClick()) {
+        } else if (OPEN_MINIMAP_CONFIG.consumeClick()) {
             client.setScreen(new MinimapConfigScreen());
         }
     }

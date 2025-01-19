@@ -12,7 +12,7 @@ public class WorldMapScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (AMapKeybinds.openWorldmap.matches(keyCode, scanCode)) {
+        if (AMapKeybinds.OPEN_WORLDMAP.matches(keyCode, scanCode)) {
             this.onClose();
             return true;
         }

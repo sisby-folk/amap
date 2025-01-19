@@ -94,7 +94,7 @@ public class MinimapConfigScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (AMapKeybinds.openMinimapConfig.matches(keyCode, scanCode)) {
+        if (AMapKeybinds.OPEN_MINIMAP_CONFIG.matches(keyCode, scanCode)) {
             this.onClose();
             return true;
         }
