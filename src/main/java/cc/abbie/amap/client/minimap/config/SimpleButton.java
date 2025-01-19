@@ -41,16 +41,16 @@ public class SimpleButton extends Button {
 
     @Override
     protected void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partialTick) {
-        int bgColour = this.isHovered() ? 0xc8666666 : 0xa0000000;
+        int bgColor = this.isHovered() ? 0xc8666666 : 0xa0000000;
         int x = this.getX();
         int y = this.getY();
         int maxX = x + this.getWidth();
         int maxY = y + this.getHeight();
-        gui.fill(x, y, maxX, maxY, bgColour);
+        gui.fill(x, y, maxX, maxY, bgColor);
         if (this.isFocused()) {
             gui.renderOutline(this.getX(), this.getY(), this.getWidth(), this.getHeight(), -1);
         }
-        int textColour = this.active ? 0xffffff : 0xa0a0a0;
-        this.renderString(gui, Minecraft.getInstance().font, textColour | Mth.ceil(this.alpha * 255.0F) << 24);
+        int textColor = this.active ? 0xffffff : 0xa0a0a0;
+        this.renderString(gui, Minecraft.getInstance().font, textColor | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 }

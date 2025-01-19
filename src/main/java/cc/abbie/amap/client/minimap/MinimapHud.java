@@ -29,7 +29,7 @@ import java.util.Objects;
 public class MinimapHud implements HudRenderCallback {
     public static final int MIN_SCALE = -2;
     public static final int MAX_SCALE = 2;
-    private static final int CROSSHAIR_COLOUR = 0xa0a0a0a0;
+    private static final int CROSSHAIR_COLOR = 0xa0a0a0a0;
     public static final ResourceLocation DEFAULT_LANDMARK_TEXTURE = AMap.id("textures/landmark/default_small.png");
 
     public static boolean enable = true;
@@ -140,13 +140,13 @@ public class MinimapHud implements HudRenderCallback {
                 pose.pushPose();
                 {
                     pose.translate(-0.5f, 0, 0);
-                    gui.vLine(mapWidth / 2, -1, mapHeight, CROSSHAIR_COLOUR);
+                    gui.vLine(mapWidth / 2, -1, mapHeight, CROSSHAIR_COLOR);
                 }
                 pose.popPose();
                 pose.pushPose();
                 {
                     pose.translate(0, -0.5f, 0);
-                    gui.hLine(0, mapWidth - 1, mapHeight / 2, CROSSHAIR_COLOUR);
+                    gui.hLine(0, mapWidth - 1, mapHeight / 2, CROSSHAIR_COLOR);
                 }
                 pose.popPose();
             }

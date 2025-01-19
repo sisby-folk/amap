@@ -18,15 +18,15 @@ public class ConfigButton extends Button {
 
     @Override
     protected void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partialTick) {
-        int textColour = this.isHovered() ? -1 : 0xffc0c0c0;
-        int bgColour = this.isHovered() ? 0x66ffffff : 0xa000ff00;
+        int textColor = this.isHovered() ? -1 : 0xffc0c0c0;
+        int bgColor = this.isHovered() ? 0x66ffffff : 0xa000ff00;
 
         if (this.isFocused()) {
             gui.renderOutline(this.getX()-1, this.getY()-1, this.getWidth()+2, this.getHeight()+1, -1);
         }
 
         Font font = Minecraft.getInstance().font;
-        gui.drawString(font, getMessage(), this.getX(), this.getY()+1, textColour);
+        gui.drawString(font, getMessage(), this.getX(), this.getY()+1, textColor);
 
         int maxX = this.getX() + this.getWidth();
         int maxY = this.getY() + this.getHeight();
@@ -34,7 +34,7 @@ public class ConfigButton extends Button {
         int valueX = maxX - 54;
         int valueY = this.getY();
 
-        gui.fill(valueX, valueY, maxX, maxY-1, bgColour);
+        gui.fill(valueX, valueY, maxX, maxY-1, bgColor);
         renderScrollingString(gui, font, Component.translatable("button.amap.toggle.enabled"), valueX, valueY, maxX, maxY-1, -1);
     }
 }

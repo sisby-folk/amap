@@ -92,13 +92,13 @@ public class ChunkRenderer {
                 Biome biome = biomePalette.byId(biomes[idx]);
                 if (block == null || biome == null) continue;
 
-                int colour = switch (mode) {
+                int color = switch (mode) {
                     case NORMAL -> {
                         MapColor.Brightness brightness;
                         int waterDepth = summ.waterDepths()[idx];
                         MapColor mapColor;
                         if (waterDepth > 0) {
-//                            colour = biome.getWaterColor() | 0xff000000;
+//                            color = biome.getWaterColor() | 0xff000000;
                             double f = (double) waterDepth * 0.1 + (double) (x + y & 1) * 0.2;
                             if (f < 0.5) {
                                 brightness = MapColor.Brightness.HIGH;
@@ -137,9 +137,9 @@ public class ChunkRenderer {
                         }
                         yield mapColor.calculateRGBColor(brightness);
                     }
-                    case BIOME -> FastColor.ABGR32.fromArgb32(getBiomeColourArgb(biomeRegistry.wrapAsHolder(biome)));
+                    case BIOME -> FastColor.ABGR32.fromArgb32(getBiomeColorArgb(biomeRegistry.wrapAsHolder(biome)));
                 };
-                pixels.setPixelRGBA(16 * regionRelativePos.x + x, 16 * regionRelativePos.z + y, colour | 0xff000000);
+                pixels.setPixelRGBA(16 * regionRelativePos.x + x, 16 * regionRelativePos.z + y, color | 0xff000000);
             }
         }
         texture.upload();
@@ -168,7 +168,7 @@ public class ChunkRenderer {
         }
     }
 
-    private static int getBiomeColourArgb(Holder<Biome> biomeHolder) {
+    private static int getBiomeColorArgb(Holder<Biome> biomeHolder) {
         Biome biome = biomeHolder.value();
         if (biomeHolder.is(BiomeTags.IS_RIVER) || biomeHolder.is(BiomeTags.IS_OCEAN) || biomeHolder.is(BiomeTags.IS_DEEP_OCEAN)) {
             return biome.getWaterColor();
