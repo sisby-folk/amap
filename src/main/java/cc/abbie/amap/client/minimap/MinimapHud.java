@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
@@ -30,7 +29,6 @@ public class MinimapHud implements HudRenderCallback {
     public static final int MIN_SCALE = -2;
     public static final int MAX_SCALE = 2;
     private static final int CROSSHAIR_COLOR = 0xa0a0a0a0;
-    public static final ResourceLocation DEFAULT_LANDMARK_TEXTURE = AMap.id("textures/landmark/default_small.png");
 
     public static boolean enable = true;
     public static int scale = 0;
@@ -179,7 +177,7 @@ public class MinimapHud implements HudRenderCallback {
                     pose.pushPose();
                     pose.translate(x, y, 0);
                     RenderSystem.setShaderColor(color[0], color[1], color[2], 1);
-                    gui.blit(DEFAULT_LANDMARK_TEXTURE, -4, -4, 0, 0, 8, 8, 8, 8);
+                    gui.blitSprite(AMap.id("minimap/landmark/default"), -4, -4, 8, 8);
                     pose.popPose();
                 }
             }
@@ -255,31 +253,14 @@ public class MinimapHud implements HudRenderCallback {
                         pose.rotateAround(Axis.ZP.rotationDegrees(rot + 180f), 0, 0, 0);
                     }
                     pose.translate(-3.5f, -4.5f, 0);
-                    gui.blit(AMap.id("textures/gui/minimap/arrow.png"), 0, 0, 0, 0, 7, 7, 8, 8);
+                    gui.blitSprite(AMap.id("minimap/arrow"), 0, 0, 7, 7);
                 }
                 pose.popPose();
             }
 
             if (renderFrame) {
-                ResourceLocation frameId = AMap.id("textures/gui/minimap/frame.png");
-                int bw = 2; // border width
-                int iw = mapWidth; // inner width
-                int ih = mapHeight; // inner height
-                int rx = mapWidth; // right x
-                int by = mapHeight; // bottom y
-
-                // 4 corners
-                gui.blit(frameId, -2, -2, 0, 0, bw, bw, 16, 16); // top left
-                gui.blit(frameId, rx, -2, 14, 0, bw, bw, 16, 16); // top right
-                gui.blit(frameId, -2, by, 0, 14, bw, bw, 16, 16); // bottom left
-                gui.blit(frameId, rx, by, 14, 14, bw, bw, 16, 16); // bottom right
-
-                // 4 sides
-                gui.blit(frameId, 0, -2, iw, bw, bw, 0, 12, bw, 16, 16); // top
-                gui.blit(frameId, 0, by, iw, bw, bw, 14, 12, bw, 16, 16); // bottom
-                gui.blit(frameId, -2, 0, bw, ih, 0, bw, bw, 12, 16, 16); // left
-                gui.blit(frameId, rx, 0, bw, ih, 14, bw, bw, 12, 16, 16); // right
-
+                // TODO handle border better
+                gui.blitSprite(AMap.id("minimap/frame"), -2, -2, mapWidth+4, mapHeight+4);
             }
 
             InfoRenderer.renderInfo(gui, mapWidth / 2, 0, mapWidth, mapHeight + 5, tickDelta);
