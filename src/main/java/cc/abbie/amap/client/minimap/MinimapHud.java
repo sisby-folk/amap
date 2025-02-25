@@ -24,6 +24,7 @@ import folk.sisby.surveyor.landmark.Landmark;
 import folk.sisby.surveyor.landmark.LandmarkType;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class MinimapHud implements HudRenderCallback {
@@ -147,9 +148,9 @@ public class MinimapHud implements HudRenderCallback {
                 pose.popPose();
             }
 
-            for (var entry : MapStorage.INSTANCE.landmarks.entrySet()) {
+            for (Map.Entry<LandmarkType<?>, Map<BlockPos, Landmark<?>>> entry : MapStorage.INSTANCE.landmarks.entrySet()) {
                 LandmarkType<?> type = entry.getKey();
-                for (var entry2 : entry.getValue().entrySet()) {
+                for (Map.Entry<BlockPos, Landmark<?>> entry2 : entry.getValue().entrySet()) {
                     BlockPos pos = entry2.getKey();
                     Landmark<?> landmark = entry2.getValue();
                     float[] color = GuiUtil.toFloats(Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColor());

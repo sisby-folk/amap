@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.MapColor;
 
 import folk.sisby.surveyor.terrain.LayerSummary;
 import folk.sisby.surveyor.terrain.RegionSummary;
+import folk.sisby.surveyor.util.RegistryPalette;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,10 +44,10 @@ public class ChunkRenderer {
         LayerSummary.Raw[][] northTerr = MapStorage.INSTANCE.regions.get(northRegionPos);
         if (northTerr == null) return;
 
-        var northBlockPalette = MapStorage.INSTANCE.blockPalettes.get(northChunkPos);
+        RegistryPalette<Block>.ValueView northBlockPalette = MapStorage.INSTANCE.blockPalettes.get(northChunkPos);
         if (northBlockPalette == null) return;
 
-        var northBiomePalette = MapStorage.INSTANCE.biomePalettes.get(northChunkPos);
+        RegistryPalette<Biome>.ValueView northBiomePalette = MapStorage.INSTANCE.biomePalettes.get(northChunkPos);
         if (northBiomePalette == null) return;
 
         if (dirtyChunks.contains(chunkPos)) {
@@ -64,20 +65,20 @@ public class ChunkRenderer {
         ChunkPos regionPos = new ChunkPos(RegionSummary.chunkToRegion(chunkPos.x), RegionSummary.chunkToRegion(chunkPos.z));
         ChunkPos regionRelativePos = new ChunkPos(RegionSummary.regionRelative(chunkPos.x), RegionSummary.regionRelative(chunkPos.z));
         LayerSummary.Raw[][] terr = MapStorage.INSTANCE.regions.get(regionPos);
-        var blockPalette = MapStorage.INSTANCE.blockPalettes.get(chunkPos);
-        var biomePalette = MapStorage.INSTANCE.biomePalettes.get(chunkPos);
+        RegistryPalette<Block>.ValueView blockPalette = MapStorage.INSTANCE.blockPalettes.get(chunkPos);
+        RegistryPalette<Biome>.ValueView biomePalette = MapStorage.INSTANCE.biomePalettes.get(chunkPos);
 
         if (terr == null || blockPalette == null || biomePalette == null)
             return;
 
-        var summ = terr[regionRelativePos.x][regionRelativePos.z];
-        var northSumm = northTerr[northRegionRelativePos.x][northRegionRelativePos.z];
+        LayerSummary.Raw summ = terr[regionRelativePos.x][regionRelativePos.z];
+        LayerSummary.Raw northSumm = northTerr[northRegionRelativePos.x][northRegionRelativePos.z];
         if (summ == null || northSumm == null) return;
 
-        var blocks = summ.blocks();
-        var biomes = summ.biomes();
-        var northBlocks = northSumm.blocks();
-        var northBiomes = northSumm.biomes();
+        int[] blocks = summ.blocks();
+        int[] biomes = summ.biomes();
+        int[] northBlocks = northSumm.blocks();
+        int[] northBiomes = northSumm.biomes();
         if (blocks == null || biomes == null || northBlocks == null || northBiomes == null) return;
 
         ResourceLocation textureLocation = textures.get(regionPos);

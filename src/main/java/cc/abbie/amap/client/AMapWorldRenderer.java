@@ -33,7 +33,7 @@ public class AMapWorldRenderer implements WorldRenderEvents.AfterEntities {
 
         for (Map.Entry<LandmarkType<?>, Map<BlockPos, Landmark<?>>> entry : MapStorage.INSTANCE.landmarks.entrySet()) {
             LandmarkType<?> type = entry.getKey();
-            for (var entry2 : entry.getValue().entrySet()) {
+            for (Map.Entry<BlockPos, Landmark<?>> entry2 : entry.getValue().entrySet()) {
                 BlockPos pos = entry2.getKey();
                 Landmark<?> landmark = entry2.getValue();
                 int color = Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColor();
