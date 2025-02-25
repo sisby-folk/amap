@@ -2,6 +2,8 @@ package cc.abbie.amap.client;
 
 import com.google.common.collect.Multimap;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -32,10 +34,10 @@ import java.util.Map;
 public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClientEvents.TerrainUpdated, SurveyorClientEvents.LandmarksAdded, SurveyorClientEvents.LandmarksRemoved {
     public static final MapStorage INSTANCE = new MapStorage();
 
-    public Map<ChunkPos, LayerSummary.Raw[][]> regions = new HashMap<>();
-    public Map<ChunkPos, RegistryPalette<Block>.ValueView> blockPalettes = new HashMap<>();
-    public Map<ChunkPos, RegistryPalette<Biome>.ValueView> biomePalettes = new HashMap<>();
-    public Map<LandmarkType<?>, Map<BlockPos, Landmark<?>>> landmarks = new HashMap<>();
+    public Map<ChunkPos, LayerSummary.Raw[][]> regions = new Object2ObjectOpenHashMap<>();
+    public Map<ChunkPos, RegistryPalette<Block>.ValueView> blockPalettes = new Object2ObjectOpenHashMap<>();
+    public Map<ChunkPos, RegistryPalette<Biome>.ValueView> biomePalettes = new Object2ObjectOpenHashMap<>();
+    public Map<LandmarkType<?>, Map<BlockPos, Landmark<?>>> landmarks = new Object2ObjectOpenHashMap<>();
 
     @Override
     public void onTerrainUpdated(Level level, WorldTerrainSummary terrainSummary, Collection<ChunkPos> chunks) {
