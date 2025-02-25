@@ -15,11 +15,19 @@ public class ConfigButton extends Button {
     public ConfigButton(Component message) {
         this(message, b -> {});
     }
+    
+    protected Component getText() {
+        return Component.literal("-->");
+    }
+    
+    protected int getColor() {
+        return 0xa0404040;
+    }
 
     @Override
     protected void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partialTick) {
         int textColor = this.isHovered() ? -1 : 0xffc0c0c0;
-        int bgColor = this.isHovered() ? 0x66ffffff : 0xa000ff00;
+        int bgColor = this.isHovered() ? 0x66ffffff : getColor();
 
         if (this.isFocused()) {
             gui.renderOutline(this.getX()-1, this.getY()-1, this.getWidth()+2, this.getHeight()+1, -1);
@@ -35,6 +43,6 @@ public class ConfigButton extends Button {
         int valueY = this.getY();
 
         gui.fill(valueX, valueY, maxX, maxY-1, bgColor);
-        renderScrollingString(gui, font, Component.translatable("button.amap.toggle.enabled"), valueX, valueY, maxX, maxY-1, -1);
+        renderScrollingString(gui, font, getText(), valueX, valueY, maxX, maxY-1, -1);
     }
 }

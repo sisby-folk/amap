@@ -19,6 +19,7 @@ import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.ChunkRenderer;
 import cc.abbie.amap.client.GuiUtil;
 import cc.abbie.amap.client.MapStorage;
+import cc.abbie.amap.client.minimap.config.MinimapConfig;
 import folk.sisby.surveyor.landmark.Landmark;
 import folk.sisby.surveyor.landmark.LandmarkType;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -30,24 +31,21 @@ public class MinimapHud implements HudRenderCallback {
     public static final int MAX_SCALE = 2;
     private static final int CROSSHAIR_COLOR = 0xa0a0a0a0;
 
-    public static boolean enable = true;
     public static int scale = 0;
     public static boolean rotate = true;
     public static boolean renderBackground = false;
     public static boolean renderFrame = true;
     public static boolean renderCrosshair = true;
-    public static Position position = Position.TOP_RIGHT;
     public static boolean renderArrowWhenRotate = false;
     public static int mapWidth = 100;
     public static int mapHeight = 100;
     public static int offsetX = 5;
     public static int offsetY = 5;
     public static boolean renderCompass = true;
-    public static boolean roundMap = true;
 
     @Override
     public void onHudRender(GuiGraphics gui, DeltaTracker deltaTracker) {
-        if (!enable) return;
+        if (!MinimapConfig.INSTANCE.enable.value()) return;
 
         float tickDelta = deltaTracker.getGameTimeDeltaPartialTick(false);
         PoseStack pose = gui.pose();
@@ -60,20 +58,20 @@ public class MinimapHud implements HudRenderCallback {
 
         int infoLinesHeight = InfoRenderer.getHeight();
 
-        switch (position) {
-            case TOP_LEFT -> {
+        switch (MinimapConfig.INSTANCE.minimap.position.value()) {
+            case UPPER_LEFT -> {
                 minX = offsetX;
                 minY = offsetY;
             }
-            case TOP_RIGHT -> {
+            case UPPER_RIGHT -> {
                 minX = windowWidth - mapWidth - offsetX;
                 minY = offsetY;
             }
-            case BOTTOM_LEFT -> {
+            case LOWER_LEFT -> {
                 minX = offsetX;
                 minY = windowHeight - mapHeight - 2 * offsetY - infoLinesHeight; // extra added for info lines
             }
-            case BOTTOM_RIGHT -> {
+            case LOWER_RIGHT -> {
                 minX = windowWidth - mapWidth - offsetX;
                 minY = windowHeight - mapHeight - 2 * offsetY - infoLinesHeight;
             }
@@ -192,7 +190,7 @@ public class MinimapHud implements HudRenderCallback {
                     float h = (mapHeight - lineHeight - 1) / 2f;
                     float theta = Mth.wrapDegrees(rot) * Mth.DEG_TO_RAD;
 
-                    if (roundMap) {
+                    if (MinimapConfig.INSTANCE.minimap.shape.value() == MinimapConfig.Minimap.Shape.ROUND) {
                         float sin = Mth.sin(theta);
                         float cos = Mth.cos(theta);
                         float denomns = Mth.sqrt(Mth.square(w * cos) + Mth.square(h * sin));
@@ -284,12 +282,5 @@ public class MinimapHud implements HudRenderCallback {
 
     public static void zoomIn() {
         if (scale < MAX_SCALE) scale++;
-    }
-
-    public enum Position {
-        TOP_RIGHT,
-        BOTTOM_RIGHT,
-        TOP_LEFT,
-        BOTTOM_LEFT
     }
 }

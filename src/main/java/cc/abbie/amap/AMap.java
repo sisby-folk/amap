@@ -1,5 +1,6 @@
 package cc.abbie.amap;
 
+import cc.abbie.amap.client.minimap.config.MinimapConfig;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -23,6 +24,8 @@ public class AMap implements ModInitializer {
         MOD_VERSION = metadata.getVersion().getFriendlyString();
         MOD_NAME = metadata.getName();
         LOGGER = LoggerFactory.getLogger(MOD_NAME);
+
+        MinimapConfig.init();
     }
 
     public static ResourceLocation id(String path) {

@@ -10,7 +10,10 @@ import net.minecraft.network.chat.Component;
 
 import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.AMapKeybinds;
+import cc.abbie.amap.client.minimap.config.BooleanConfigButton;
 import cc.abbie.amap.client.minimap.config.ConfigButton;
+import cc.abbie.amap.client.minimap.config.EnumConfigButton;
+import cc.abbie.amap.client.minimap.config.MinimapConfig;
 import cc.abbie.amap.client.minimap.config.SimpleButton;
 
 public class MinimapConfigScreen extends Screen {
@@ -42,28 +45,44 @@ public class MinimapConfigScreen extends Screen {
         GridLayout inner = new GridLayout();
         GridLayout.RowHelper innerRows = inner.createRowHelper(1);
 
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.enableMinimap"), b -> {
-            MinimapHud.enable = !MinimapHud.enable;
-        }));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.renderType")));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.deathPoint")));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.minimap"), b -> {
-            MinimapHud.position = MinimapHud.Position.values()[(MinimapHud.position.ordinal() + 1) % MinimapHud.Position.values().length];
-        }));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.surfaceMap"), b -> {
-            MinimapHud.roundMap = !MinimapHud.roundMap;
-        }));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.entitiesRadar")));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.marker"), b -> {
-            if (MinimapHud.mapWidth == 100) {
-                MinimapHud.mapWidth = 200;
-            } else {
-                MinimapHud.mapWidth = 100;
-            }
-        }));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.about")));
+        innerRows.addChild(new BooleanConfigButton(
+                Component.translatable("config.amap.option.enableMinimap"),
+                MinimapConfig.INSTANCE.enable
+        ));
+        innerRows.addChild(new EnumConfigButton<>(
+                Component.translatable("config.amap.option.renderType"),
+                MinimapConfig.INSTANCE.renderType,
+                MinimapConfig.RenderType.values()
+        ));
+        innerRows.addChild(new BooleanConfigButton(
+                Component.translatable("config.amap.option.deathPoint"),
+                MinimapConfig.INSTANCE.deathPoint
+        ));
+        innerRows.addChild(new ConfigButton(
+                Component.translatable("config.amap.category.minimap"),
+                b -> minecraft.setScreen(new SubConfigScreen(this))
+        ));
+        innerRows.addChild(new ConfigButton(
+                Component.translatable("config.amap.category.surfaceMap"),
+                b -> minecraft.setScreen(new SubConfigScreen(this))
+        ));
+        innerRows.addChild(new ConfigButton(
+                Component.translatable("config.amap.category.entitiesRadar"),
+                b -> minecraft.setScreen(new SubConfigScreen(this))
+        ));
+        innerRows.addChild(new ConfigButton(
+                Component.translatable("config.amap.category.marker"),
+                b -> minecraft.setScreen(new SubConfigScreen(this))
+        ));
+        innerRows.addChild(new ConfigButton(
+                Component.translatable("config.amap.category.about"),
+                b -> minecraft.setScreen(new SubConfigScreen(this))
+        ));
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.updateCheck")));
-        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.autoUpdateCheck")));
+        innerRows.addChild(new BooleanConfigButton(
+                Component.translatable("config.amap.option.autoUpdateCheck"),
+                MinimapConfig.INSTANCE.autoUpdateCheck
+        ));
 
         innerContainer.addChild(inner, 0, 0);
 
