@@ -1,4 +1,4 @@
-package cc.abbie.amap.client.minimap;
+package cc.abbie.amap.client.minimap.config.screen;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;

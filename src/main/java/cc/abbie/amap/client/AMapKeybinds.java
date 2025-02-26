@@ -1,6 +1,6 @@
 package cc.abbie.amap.client;
 
-import cc.abbie.amap.client.minimap.MinimapConfigScreen;
+import cc.abbie.amap.client.minimap.config.screen.MinimapConfigScreen;
 import cc.abbie.amap.client.minimap.MinimapHud;
 import cc.abbie.amap.client.worldmap.WorldMapScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

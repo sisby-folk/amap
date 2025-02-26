@@ -1,4 +1,4 @@
-package cc.abbie.amap.client.minimap;
+package cc.abbie.amap.client.minimap.config.screen;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,11 +10,11 @@ import net.minecraft.network.chat.Component;
 
 import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.AMapKeybinds;
-import cc.abbie.amap.client.minimap.config.BooleanConfigButton;
-import cc.abbie.amap.client.minimap.config.ConfigButton;
-import cc.abbie.amap.client.minimap.config.EnumConfigButton;
 import cc.abbie.amap.client.minimap.config.MinimapConfig;
-import cc.abbie.amap.client.minimap.config.SimpleButton;
+import cc.abbie.amap.client.minimap.config.widget.BooleanConfigButton;
+import cc.abbie.amap.client.minimap.config.widget.ConfigButton;
+import cc.abbie.amap.client.minimap.config.widget.EnumConfigButton;
+import cc.abbie.amap.client.minimap.config.widget.SimpleButton;
 
 public class MinimapConfigScreen extends Screen {
     public MinimapConfigScreen() {
