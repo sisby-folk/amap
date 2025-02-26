@@ -16,8 +16,8 @@ import cc.abbie.amap.client.minimap.config.widget.ConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.EnumConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.SimpleButton;
 
-public class MinimapConfigScreen extends Screen {
-    public MinimapConfigScreen() {
+public class ConfigScreen extends Screen {
+    public ConfigScreen() {
         super(Component.translatable("screen.amap.minimap.config"));
     }
 
@@ -60,23 +60,22 @@ public class MinimapConfigScreen extends Screen {
         ));
         innerRows.addChild(new ConfigButton(
                 Component.translatable("config.amap.category.minimap"),
-                b -> minecraft.setScreen(new SubConfigScreen(this))
+                b -> minecraft.setScreen(new MinimapOptionsScreen(this))
         ));
         innerRows.addChild(new ConfigButton(
                 Component.translatable("config.amap.category.surfaceMap"),
-                b -> minecraft.setScreen(new SubConfigScreen(this))
+                b -> minecraft.setScreen(new SurfaceMapOptionsScreen(this))
         ));
         innerRows.addChild(new ConfigButton(
                 Component.translatable("config.amap.category.entitiesRadar"),
-                b -> minecraft.setScreen(new SubConfigScreen(this))
+                b -> minecraft.setScreen(new EntitiesRadarOptionsScreen(this))
         ));
         innerRows.addChild(new ConfigButton(
                 Component.translatable("config.amap.category.marker"),
-                b -> minecraft.setScreen(new SubConfigScreen(this))
+                b -> minecraft.setScreen(new MarkerOptionsScreen(this))
         ));
         innerRows.addChild(new ConfigButton(
-                Component.translatable("config.amap.category.about"),
-                b -> minecraft.setScreen(new SubConfigScreen(this))
+                Component.translatable("config.amap.category.about")
         ));
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.updateCheck")));
         innerRows.addChild(new BooleanConfigButton(
