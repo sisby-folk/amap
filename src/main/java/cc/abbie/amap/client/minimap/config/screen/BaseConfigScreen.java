@@ -3,6 +3,7 @@ package cc.abbie.amap.client.minimap.config.screen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -10,18 +11,22 @@ import org.jetbrains.annotations.Nullable;
 
 import cc.abbie.amap.client.minimap.config.widget.BooleanConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.ConfigButton;
+import cc.abbie.amap.client.minimap.config.widget.EnumConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.SimpleButton;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueTreeNode;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public abstract class AbstractConfigScreen extends Screen {
+public class BaseConfigScreen extends Screen {
     private final Screen parent;
+    private final Iterable<ValueTreeNode> nodes;
     
-    protected AbstractConfigScreen(Component title, @Nullable Screen parent) {
+    protected BaseConfigScreen(Component title, Iterable<ValueTreeNode> nodes, @Nullable Screen parent) {
         super(title);
         
         this.parent = parent;
+        this.nodes = nodes;
     }
 
     @Override
@@ -39,9 +44,7 @@ public abstract class AbstractConfigScreen extends Screen {
         GridLayout inner = new GridLayout();
         GridLayout.RowHelper innerRows = inner.createRowHelper(1);
 
-        for (ConfigButton button : getButtons()) {
-            innerRows.addChild(button);
-        }
+        addConfigButtons(innerRows::addChild);
         
         innerContainer.addChild(inner, 0, 0);
 
@@ -62,19 +65,38 @@ public abstract class AbstractConfigScreen extends Screen {
 
     }
     
-    protected abstract List<ConfigButton> getButtons();
-    
-    public static Component createComponent(TrackedValue<?> trackedValue) {
-        return Component.translatable("config.amap.option." + String.join(".", trackedValue.key()));
+    protected void addConfigButtons(Consumer<LayoutElement> consumer) {
+        for (ValueTreeNode node : nodes) {
+            ConfigButton button = getButton(node);
+            if (button == null) continue;
+            consumer.accept(button);
+        }
     }
     
-    public static BooleanConfigButton booleanButton(TrackedValue<Boolean> trackedValue) {
-        return new BooleanConfigButton(
-                createComponent(trackedValue),
-                trackedValue
+    @Nullable
+    private ConfigButton getButton(ValueTreeNode node) {
+        Component name = createComponent(node);
+        if (node instanceof ValueTreeNode.Section section) {
+            return new ConfigButton(name, b -> minecraft.setScreen(new BaseConfigScreen(name, section, this)));
+        } else if (node instanceof TrackedValue<?> trackedValue) {
+            Object defaultValue = trackedValue.getDefaultValue();
+            if (defaultValue instanceof Boolean) {
+                return new BooleanConfigButton(name, (TrackedValue<Boolean>) trackedValue);
+            } else if (defaultValue instanceof Enum<?>) {
+                return new EnumConfigButton<>(name, (TrackedValue<Enum>) trackedValue);
+            }
+        }
+        return null;
+    }
+    
+    public static Component createComponent(ValueTreeNode node) {
+        return Component.translatable(
+                "config.amap."
+                        + (node instanceof ValueTreeNode.Section ? "category" : "option")
+                        + "." + String.join(".", node.key())
         );
     }
-
+    
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft.level == null) {

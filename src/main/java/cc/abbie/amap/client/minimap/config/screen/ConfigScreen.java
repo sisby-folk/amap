@@ -1,7 +1,6 @@
 package cc.abbie.amap.client.minimap.config.screen;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -14,18 +13,11 @@ import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.AMapKeybinds;
 import cc.abbie.amap.client.minimap.config.MinimapConfig;
 import cc.abbie.amap.client.minimap.config.widget.ConfigButton;
-import cc.abbie.amap.client.minimap.config.widget.EnumConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.SimpleButton;
 
-import static cc.abbie.amap.client.minimap.config.screen.AbstractConfigScreen.booleanButton;
-
-public class ConfigScreen extends Screen {
-    private final Screen parent;
-    
+public class ConfigScreen extends BaseConfigScreen {
     public ConfigScreen(@Nullable Screen parent) {
-        super(Component.translatable("screen.amap.minimap.config"));
-        
-        this.parent = parent;
+        super(Component.translatable("screen.amap.minimap.config"), MinimapConfig.INSTANCE.nodes(), parent);
     }
 
     private static int boopCounter = 0;
@@ -52,34 +44,9 @@ public class ConfigScreen extends Screen {
         GridLayout inner = new GridLayout();
         GridLayout.RowHelper innerRows = inner.createRowHelper(1);
 
-        MinimapConfig config = MinimapConfig.INSTANCE;
-        innerRows.addChild(booleanButton(config.enable));
-        innerRows.addChild(new EnumConfigButton<>(
-                config.renderType,
-                MinimapConfig.RenderType.values()
-        ));
-        innerRows.addChild(booleanButton(config.deathPoint));
-        innerRows.addChild(new ConfigButton(
-                Component.translatable("config.amap.category.minimap"),
-                b -> minecraft.setScreen(new MinimapOptionsScreen(this))
-        ));
-        innerRows.addChild(new ConfigButton(
-                Component.translatable("config.amap.category.surfaceMap"),
-                b -> minecraft.setScreen(new SurfaceMapOptionsScreen(this))
-        ));
-        innerRows.addChild(new ConfigButton(
-                Component.translatable("config.amap.category.entitiesRadar"),
-                b -> minecraft.setScreen(new EntitiesRadarOptionsScreen(this))
-        ));
-        innerRows.addChild(new ConfigButton(
-                Component.translatable("config.amap.category.marker"),
-                b -> minecraft.setScreen(new MarkerOptionsScreen(this))
-        ));
-        innerRows.addChild(new ConfigButton(
-                Component.translatable("config.amap.category.about")
-        ));
+        addConfigButtons(innerRows::addChild);
+        innerRows.addChild(new ConfigButton(Component.translatable("config.amap.category.about")));
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.updateCheck")));
-        innerRows.addChild(booleanButton(config.autoUpdateCheck));
 
         innerContainer.addChild(inner, 0, 0);
 
@@ -101,20 +68,6 @@ public class ConfigScreen extends Screen {
             gui.fill(x, y, maxX, maxY, 0xa0000000);
         });
         layout.visitWidgets(this::addRenderableWidget);
-    }
-
-    @Override
-    public void onClose() {
-        minecraft.setScreen(parent);
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (minecraft.level == null) {
-            renderPanorama(guiGraphics, partialTick);
-            renderBlurredBackground(partialTick);
-            renderMenuBackground(guiGraphics);
-        }
     }
 
     @Override
