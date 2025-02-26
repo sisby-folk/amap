@@ -19,6 +19,7 @@ repositories {
     // for more information about repositories.
     maven { url 'https://repo.sleeping.town' }
     maven { url 'https://maven.parchmentmc.org' }
+    maven { url 'https://maven.terraformersmc.com' }
 }
 
 dependencies {
@@ -31,6 +32,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     modImplementation "folk.sisby:surveyor:${project.surveyor_version}"
     implementation "folk.sisby:kaleido-config:${project.kaleido_version}"

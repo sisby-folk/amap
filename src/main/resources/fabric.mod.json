@@ -20,6 +20,9 @@
     ],
     "client": [
       "cc.abbie.amap.client.AMapClient"
+    ],
+    "modmenu": [
+      "cc.abbie.amap.compat.modmenu.AMapModMenu"
     ]
   },
   "mixins": [

@@ -64,7 +64,11 @@ public abstract class AbstractConfigScreen extends Screen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // no-op
+        if (minecraft.level == null) {
+            renderPanorama(guiGraphics, partialTick);
+            renderBlurredBackground(partialTick);
+            renderMenuBackground(guiGraphics);
+        }
     }
     
     @Override

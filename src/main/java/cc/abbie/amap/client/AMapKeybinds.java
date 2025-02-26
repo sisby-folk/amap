@@ -42,7 +42,7 @@ public class AMapKeybinds implements ClientTickEvents.EndTick {
         } else if (TOGGLE_ROTATION.consumeClick()) {
             MinimapHud.rotate = !MinimapHud.rotate;
         } else if (OPEN_MINIMAP_CONFIG.consumeClick()) {
-            client.setScreen(new ConfigScreen());
+            client.setScreen(new ConfigScreen(null));
         }
     }
 }

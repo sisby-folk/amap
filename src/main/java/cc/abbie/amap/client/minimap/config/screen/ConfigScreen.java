@@ -8,6 +8,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 
+import org.jetbrains.annotations.Nullable;
+
 import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.AMapKeybinds;
 import cc.abbie.amap.client.minimap.config.MinimapConfig;
@@ -17,8 +19,12 @@ import cc.abbie.amap.client.minimap.config.widget.EnumConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.SimpleButton;
 
 public class ConfigScreen extends Screen {
-    public ConfigScreen() {
+    private final Screen parent;
+    
+    public ConfigScreen(@Nullable Screen parent) {
         super(Component.translatable("screen.amap.minimap.config"));
+        
+        this.parent = parent;
     }
 
     private static int boopCounter = 0;
@@ -106,8 +112,17 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
+    public void onClose() {
+        minecraft.setScreen(parent);
+    }
+
+    @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // no-op
+        if (minecraft.level == null) {
+            renderPanorama(guiGraphics, partialTick);
+            renderBlurredBackground(partialTick);
+            renderMenuBackground(guiGraphics);
+        }
     }
 
     @Override
