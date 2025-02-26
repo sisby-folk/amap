@@ -177,6 +177,7 @@ public class MinimapHud implements HudRenderCallback {
                     pose.translate(x, y, 0);
                     RenderSystem.setShaderColor(color[0], color[1], color[2], 1);
                     gui.blitSprite(AMap.id("minimap/landmark/default"), -4, -4, 8, 8);
+                    RenderSystem.setShaderColor(1, 1, 1, 1);
                     pose.popPose();
                 }
             }
