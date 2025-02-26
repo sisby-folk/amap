@@ -6,8 +6,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -17,7 +17,6 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import folk.sisby.surveyor.WorldSummary;
 import folk.sisby.surveyor.client.SurveyorClientEvents;
 import folk.sisby.surveyor.landmark.Landmark;
-import folk.sisby.surveyor.landmark.LandmarkType;
 import folk.sisby.surveyor.landmark.WorldLandmarks;
 import folk.sisby.surveyor.terrain.ChunkSummary;
 import folk.sisby.surveyor.terrain.LayerSummary;
@@ -27,8 +26,8 @@ import folk.sisby.surveyor.util.RegistryPalette;
 
 import java.util.BitSet;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 // mostly copied from https://github.com/HestiMae/hoofprint/blob/777a182f5e0136d8e3b9a5b9c9362fe6dc41ea72/src/main/java/garden/hestia/hoofprint/HoofprintMapStorage.java
 public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClientEvents.TerrainUpdated, SurveyorClientEvents.LandmarksAdded, SurveyorClientEvents.LandmarksRemoved {
@@ -37,7 +36,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
     public Map<ChunkPos, LayerSummary.Raw[][]> regions = new Object2ObjectOpenHashMap<>();
     public Map<ChunkPos, RegistryPalette<Block>.ValueView> blockPalettes = new Object2ObjectOpenHashMap<>();
     public Map<ChunkPos, RegistryPalette<Biome>.ValueView> biomePalettes = new Object2ObjectOpenHashMap<>();
-    public Map<LandmarkType<?>, Map<BlockPos, Landmark<?>>> landmarks = new Object2ObjectOpenHashMap<>();
+    public Map<UUID, Map<ResourceLocation, Landmark>> landmarks = new Object2ObjectOpenHashMap<>();
 
     @Override
     public void onTerrainUpdated(Level level, WorldTerrainSummary terrainSummary, Collection<ChunkPos> chunks) {
@@ -59,7 +58,7 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
     }
 
     @Override
-    public void onWorldLoad(ClientLevel clientLevel, WorldSummary summary, LocalPlayer player, Map<ChunkPos, BitSet> terrain, Multimap<ResourceKey<Structure>, ChunkPos> structures, Multimap<LandmarkType<?>, BlockPos> multimap) {
+    public void onWorldLoad(ClientLevel clientLevel, WorldSummary summary, LocalPlayer player, Map<ChunkPos, BitSet> terrain, Multimap<ResourceKey<Structure>, ChunkPos> structures, Multimap<UUID, ResourceLocation> multimap) {
         regions.clear();
         biomePalettes.clear();
         blockPalettes.clear();
@@ -69,12 +68,12 @@ public class MapStorage implements SurveyorClientEvents.WorldLoad, SurveyorClien
     }
 
     @Override
-    public void onLandmarksAdded(Level level, WorldLandmarks worldLandmarks, Multimap<LandmarkType<?>, BlockPos> multimap) {
+    public void onLandmarksAdded(Level level, WorldLandmarks worldLandmarks, Multimap<UUID, ResourceLocation> multimap) {
         updateLandmarks(worldLandmarks);
     }
 
     @Override
-    public void onLandmarksRemoved(Level level, WorldLandmarks worldLandmarks, Multimap<LandmarkType<?>, BlockPos> multimap) {
+    public void onLandmarksRemoved(Level level, WorldLandmarks worldLandmarks, Multimap<UUID, ResourceLocation> multimap) {
         updateLandmarks(worldLandmarks);
     }
 

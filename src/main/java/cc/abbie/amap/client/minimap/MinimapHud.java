@@ -10,8 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 
@@ -21,11 +21,10 @@ import cc.abbie.amap.client.GuiUtil;
 import cc.abbie.amap.client.MapStorage;
 import cc.abbie.amap.client.minimap.config.MinimapConfig;
 import folk.sisby.surveyor.landmark.Landmark;
-import folk.sisby.surveyor.landmark.LandmarkType;
+import folk.sisby.surveyor.landmark.component.LandmarkComponentTypes;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class MinimapHud implements HudRenderCallback {
     public static final int MIN_SCALE = -2;
@@ -148,12 +147,14 @@ public class MinimapHud implements HudRenderCallback {
                 pose.popPose();
             }
 
-            for (Map.Entry<LandmarkType<?>, Map<BlockPos, Landmark<?>>> entry : MapStorage.INSTANCE.landmarks.entrySet()) {
-                LandmarkType<?> type = entry.getKey();
-                for (Map.Entry<BlockPos, Landmark<?>> entry2 : entry.getValue().entrySet()) {
-                    BlockPos pos = entry2.getKey();
-                    Landmark<?> landmark = entry2.getValue();
-                    float[] color = GuiUtil.toFloats(Objects.requireNonNullElse(landmark.color(), DyeColor.WHITE).getTextureDiffuseColor());
+            for (var entry : MapStorage.INSTANCE.landmarks.entrySet()) {
+                for (Map.Entry<ResourceLocation, Landmark> entry2 : entry.getValue().entrySet()) {
+                    Landmark landmark = entry2.getValue();
+
+                    BlockPos pos = landmark.get(LandmarkComponentTypes.POS);
+                    if (pos == null) continue;
+
+                    float[] color = GuiUtil.toFloats(landmark.getOrDefault(LandmarkComponentTypes.COLOR, -1));
                     float x = (float) mapWidth / 2;
                     float y = (float) mapHeight / 2;
 
