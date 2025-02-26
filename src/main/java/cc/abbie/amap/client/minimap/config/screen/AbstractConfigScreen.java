@@ -8,8 +8,10 @@ import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.Nullable;
 
+import cc.abbie.amap.client.minimap.config.widget.BooleanConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.ConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.SimpleButton;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 
 import java.util.List;
 
@@ -61,6 +63,14 @@ public abstract class AbstractConfigScreen extends Screen {
     }
     
     protected abstract List<ConfigButton> getButtons();
+    
+    protected static BooleanConfigButton booleanButton(TrackedValue<Boolean> trackedValue) {
+        String translationKey = "config.amap.option." + String.join(".", trackedValue.key());
+        return new BooleanConfigButton(
+                Component.translatable(translationKey),
+                trackedValue
+        );
+    }
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

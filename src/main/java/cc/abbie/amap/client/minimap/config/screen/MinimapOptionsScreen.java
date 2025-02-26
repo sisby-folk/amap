@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import cc.abbie.amap.client.minimap.config.MinimapConfig;
-import cc.abbie.amap.client.minimap.config.widget.BooleanConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.ConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.EnumConfigButton;
 
@@ -19,92 +18,78 @@ public class MinimapOptionsScreen extends AbstractConfigScreen {
 
     @Override
     protected List<ConfigButton> getButtons() {
+        MinimapConfig.Minimap section = MinimapConfig.INSTANCE.minimap;
         return List.of(
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.shape"),
-                        MinimapConfig.INSTANCE.minimap.shape,
+                        section.shape,
                         MinimapConfig.Minimap.Shape.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.texture"),
-                        MinimapConfig.INSTANCE.minimap.texture,
+                        section.texture,
                         MinimapConfig.Minimap.Texture.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.position"),
-                        MinimapConfig.INSTANCE.minimap.position,
+                        section.position,
                         MinimapConfig.Minimap.Position.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.scale"),
-                        MinimapConfig.INSTANCE.minimap.scale,
+                        section.scale,
                         MinimapConfig.Minimap.Scale.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.opacity"),
-                        MinimapConfig.INSTANCE.minimap.opacity,
+                        section.opacity,
                         MinimapConfig.Minimap.Opacity.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.largeScale"),
-                        MinimapConfig.INSTANCE.minimap.largeScale,
+                        section.largeScale,
                         MinimapConfig.Minimap.Scale.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.largeOpacity"),
-                        MinimapConfig.INSTANCE.minimap.largeOpacity,
+                        section.largeOpacity,
                         MinimapConfig.Minimap.Opacity.values()
                 ),
-                new BooleanConfigButton(
-                        Component.translatable("config.amap.option.minimap.largeLabel"),
-                        MinimapConfig.INSTANCE.minimap.largeLabel
-                ),
-                new BooleanConfigButton(
-                        Component.translatable("config.amap.option.minimap.filtering"),
-                        MinimapConfig.INSTANCE.minimap.filtering
-                ),
+                booleanButton(section.largeLabel),
+                booleanButton(section.filtering),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.showCoordinates"),
-                        MinimapConfig.INSTANCE.minimap.showCoordinates,
+                        section.showCoordinates,
                         MinimapConfig.Minimap.CoordinatesType.values()
                 ),
-                new BooleanConfigButton(
-                        Component.translatable("config.amap.option.minimap.showMenuKey"),
-                        MinimapConfig.INSTANCE.minimap.showMenuKey
-                ),
+                booleanButton(section.showMenuKey),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.fontScale"),
-                        MinimapConfig.INSTANCE.minimap.fontScale,
+                        section.fontScale,
                         MinimapConfig.Minimap.Scale.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.defaultZoom"),
-                        MinimapConfig.INSTANCE.minimap.defaultZoom,
+                        section.defaultZoom,
                         MinimapConfig.Minimap.Zoom.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.maskType"),
-                        MinimapConfig.INSTANCE.minimap.mapMaskType,
+                        section.mapMaskType,
                         MinimapConfig.Minimap.MaskType.values()
                 ),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.updateFrequency"),
-                        MinimapConfig.INSTANCE.minimap.updateFrequency,
+                        section.updateFrequency,
                         MinimapConfig.Minimap.Amount.values()
                 ),
-                new BooleanConfigButton(
-                        Component.translatable("config.amap.option.minimap.threading"),
-                        MinimapConfig.INSTANCE.minimap.threading
-                ),
+                booleanButton(section.threading),
                 new EnumConfigButton<>(
                         Component.translatable("config.amap.option.minimap.threadPriority"),
-                        MinimapConfig.INSTANCE.minimap.threadPriority,
+                        section.threadPriority,
                         MinimapConfig.Minimap.Amount.values()
                 ),
-                new BooleanConfigButton(
-                        Component.translatable("config.amap.option.minimap.preloadedChunks"),
-                        MinimapConfig.INSTANCE.minimap.preloadedChunks
-                )
+                booleanButton(section.preloadedChunks)
         );
     }
 }

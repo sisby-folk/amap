@@ -40,6 +40,17 @@
   "config.amap.option.minimap.threading": "Threading",
   "config.amap.option.minimap.threadPriority": "Thread Priority",
   "config.amap.option.minimap.preloadedChunks": "Preloaded Chunks",
+  
+  "config.amap.option.surfaceMap.lighting": "Lighting",
+  "config.amap.option.surfaceMap.lightingType": "Lighting Type",
+  "config.amap.option.surfaceMap.terrainUndulate": "Terrain Undulate",
+  "config.amap.option.surfaceMap.terrainDepth": "Terrain Depth",
+  "config.amap.option.surfaceMap.transparency": "Transparency",
+  "config.amap.option.surfaceMap.environmentColor": "Environment Color",
+  "config.amap.option.surfaceMap.omitHeightCalc": "Omit Height Calc",
+  "config.amap.option.surfaceMap.hideSnow": "Hide Snow",
+  "config.amap.option.surfaceMap.showChunkGrid": "Show Chunk Grid",
+  "config.amap.option.surfaceMap.showSlimeChunk": "Show Slime Chunk",
 
   "config.amap.option.entitiesRadar.enable": "Entities Radar",
   "config.amap.option.entitiesRadar.player": "Player",
@@ -47,9 +58,14 @@
   "config.amap.option.entitiesRadar.monster": "Monster",
   "config.amap.option.entitiesRadar.slime": "Slime",
   "config.amap.option.entitiesRadar.squid": "Squid",
-  "config.amap.option.entitiesRadar.otherLiving": "Other Living",
+  "config.amap.option.entitiesRadar.other": "Other Living",
   "config.amap.option.entitiesRadar.lightning": "Lightning",
   "config.amap.option.entitiesRadar.showDirection": "Show Direction",
+  
+  "config.amap.option.marker.enable": "Marker",
+  "config.amap.option.marker.icon": "Label",
+  "config.amap.option.marker.label": "Icon",
+  "config.amap.option.marker.distance": "Distance",
 
   "config.amap.option.updateCheck": "Update Check",
   "config.amap.option.autoUpdateCheck": "Auto Update Check",
