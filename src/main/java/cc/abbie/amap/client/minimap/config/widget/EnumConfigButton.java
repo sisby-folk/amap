@@ -2,6 +2,7 @@ package cc.abbie.amap.client.minimap.config.widget;
 
 import net.minecraft.network.chat.Component;
 
+import cc.abbie.amap.client.minimap.config.screen.AbstractConfigScreen;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 
 public class EnumConfigButton<E extends Enum<E>> extends ConfigButton {
@@ -13,6 +14,10 @@ public class EnumConfigButton<E extends Enum<E>> extends ConfigButton {
         
         this.trackedValue = trackedValue;
         this.values = values;
+    }
+    
+    public EnumConfigButton(TrackedValue<E> trackedValue, E[] values) {
+        this(AbstractConfigScreen.createComponent(trackedValue), trackedValue, values);
     }
 
     @Override

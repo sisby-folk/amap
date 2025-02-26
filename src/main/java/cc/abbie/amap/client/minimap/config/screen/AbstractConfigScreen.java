@@ -64,10 +64,13 @@ public abstract class AbstractConfigScreen extends Screen {
     
     protected abstract List<ConfigButton> getButtons();
     
-    protected static BooleanConfigButton booleanButton(TrackedValue<Boolean> trackedValue) {
-        String translationKey = "config.amap.option." + String.join(".", trackedValue.key());
+    public static Component createComponent(TrackedValue<?> trackedValue) {
+        return Component.translatable("config.amap.option." + String.join(".", trackedValue.key()));
+    }
+    
+    public static BooleanConfigButton booleanButton(TrackedValue<Boolean> trackedValue) {
         return new BooleanConfigButton(
-                Component.translatable(translationKey),
+                createComponent(trackedValue),
                 trackedValue
         );
     }

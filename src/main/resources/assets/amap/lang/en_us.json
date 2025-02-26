@@ -18,7 +18,7 @@
   "config.amap.category.marker": "Marker Options",
   "config.amap.category.about": "About AMap",
 
-  "config.amap.option.enableMinimap": "AMap Minimap",
+  "config.amap.option.enable": "AMap Minimap",
   "config.amap.option.renderType": "Render Type",
   "config.amap.option.deathPoint": "Death Point",
   
@@ -35,7 +35,7 @@
   "config.amap.option.minimap.showMenuKey": "Show MenuKey",
   "config.amap.option.minimap.fontScale": "Font Scale",
   "config.amap.option.minimap.defaultZoom": "Default Zoom",
-  "config.amap.option.minimap.maskType": "MapMask Type",
+  "config.amap.option.minimap.mapMaskType": "MapMask Type",
   "config.amap.option.minimap.updateFrequency": "Update Frequency",
   "config.amap.option.minimap.threading": "Threading",
   "config.amap.option.minimap.threadPriority": "Thread Priority",

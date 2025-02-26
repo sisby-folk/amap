@@ -13,10 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import cc.abbie.amap.AMap;
 import cc.abbie.amap.client.AMapKeybinds;
 import cc.abbie.amap.client.minimap.config.MinimapConfig;
-import cc.abbie.amap.client.minimap.config.widget.BooleanConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.ConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.EnumConfigButton;
 import cc.abbie.amap.client.minimap.config.widget.SimpleButton;
+
+import static cc.abbie.amap.client.minimap.config.screen.AbstractConfigScreen.booleanButton;
 
 public class ConfigScreen extends Screen {
     private final Screen parent;
@@ -51,19 +52,13 @@ public class ConfigScreen extends Screen {
         GridLayout inner = new GridLayout();
         GridLayout.RowHelper innerRows = inner.createRowHelper(1);
 
-        innerRows.addChild(new BooleanConfigButton(
-                Component.translatable("config.amap.option.enableMinimap"),
-                MinimapConfig.INSTANCE.enable
-        ));
+        MinimapConfig config = MinimapConfig.INSTANCE;
+        innerRows.addChild(booleanButton(config.enable));
         innerRows.addChild(new EnumConfigButton<>(
-                Component.translatable("config.amap.option.renderType"),
-                MinimapConfig.INSTANCE.renderType,
+                config.renderType,
                 MinimapConfig.RenderType.values()
         ));
-        innerRows.addChild(new BooleanConfigButton(
-                Component.translatable("config.amap.option.deathPoint"),
-                MinimapConfig.INSTANCE.deathPoint
-        ));
+        innerRows.addChild(booleanButton(config.deathPoint));
         innerRows.addChild(new ConfigButton(
                 Component.translatable("config.amap.category.minimap"),
                 b -> minecraft.setScreen(new MinimapOptionsScreen(this))
@@ -84,10 +79,7 @@ public class ConfigScreen extends Screen {
                 Component.translatable("config.amap.category.about")
         ));
         innerRows.addChild(new ConfigButton(Component.translatable("config.amap.option.updateCheck")));
-        innerRows.addChild(new BooleanConfigButton(
-                Component.translatable("config.amap.option.autoUpdateCheck"),
-                MinimapConfig.INSTANCE.autoUpdateCheck
-        ));
+        innerRows.addChild(booleanButton(config.autoUpdateCheck));
 
         innerContainer.addChild(inner, 0, 0);
 
