@@ -1,26 +1,25 @@
 package cc.abbie.amap.client.minimap;
 
+import cc.abbie.amap.client.minimap.config.MinimapConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 import cc.abbie.amap.client.AMapKeybinds;
 
 public class InfoRenderer {
-    public static boolean showCoordinates = true;
-    public static boolean showMenuKey = true;
-
     public static int getHeight() {
         int lineHeight = Minecraft.getInstance().font.lineHeight;
         int height = 0;
 
-        if (showCoordinates) {
+        if (MinimapConfig.INSTANCE.minimap.showCoordinates.value() != MinimapConfig.Minimap.CoordinatesType.DISABLED) {
             height += 2 * lineHeight;
         }
-        if (showMenuKey) {
+        if (MinimapConfig.INSTANCE.minimap.showMenuKey.value()) {
             height += lineHeight;
         }
 
@@ -34,20 +33,27 @@ public class InfoRenderer {
         final int lineHeight = font.lineHeight;
         int yOffset = y;
 
-        if (showCoordinates) {
+        if (MinimapConfig.INSTANCE.minimap.showCoordinates.value() != MinimapConfig.Minimap.CoordinatesType.DISABLED) {
             LocalPlayer player = client.player;
             if (player == null) return;
 
             Vec3 eyePos = player.getEyePosition(partialTick);
             int footPos = (int) player.getPosition(partialTick).y;
 
-            gui.drawCenteredString(font, String.format("%+.2f, %+.2f", eyePos.x, eyePos.z), centreX, yOffset, -1);
-            yOffset += lineHeight;
-            gui.drawCenteredString(font, String.format("%.2f (%d)", eyePos.y, footPos), centreX, yOffset, -1);
-            yOffset += lineHeight;
+            if (MinimapConfig.INSTANCE.minimap.showCoordinates.value() == MinimapConfig.Minimap.CoordinatesType.TYPE1) {
+                gui.drawCenteredString(font, String.format("%+d, %+d", Mth.floor(eyePos.x), Mth.floor(eyePos.z)), centreX, yOffset, -1);
+                yOffset += lineHeight;
+                gui.drawCenteredString(font, String.format("%d", footPos), centreX, yOffset, -1);
+                yOffset += lineHeight;
+            } else {
+                gui.drawCenteredString(font, String.format("%+.2f, %+.2f", eyePos.x, eyePos.z), centreX, yOffset, -1);
+                yOffset += lineHeight;
+                gui.drawCenteredString(font, String.format("%.2f (%d)", eyePos.y, footPos), centreX, yOffset, -1);
+                yOffset += lineHeight;
+            }
         }
 
-        if (showMenuKey) {
+        if (MinimapConfig.INSTANCE.minimap.showMenuKey.value()) {
             Component infoLine = Component.translatable("info.amap.menuKey", AMapKeybinds.OPEN_MINIMAP_CONFIG.getTranslatedKeyMessage());
             int textWidth = font.width(infoLine.getVisualOrderText());
             gui.drawString(font, infoLine, rightX - textWidth, yOffset, -1);
